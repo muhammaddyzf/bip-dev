@@ -37,4 +37,9 @@ class Kabkot extends Model
     {
         return $this->belongsTo('App\Ikm', 'IKM_KABKOT', 'id');
     }
+
+    public function event()
+    {
+        return $this->belongsTo('App\Event', 'EVT_KABKOT', 'id');
+    }
 }

@@ -6,8 +6,8 @@ navbar
 
 @section('content')
 <h1 class="lead">Produk</h1>
-{{-- {{ Breadcrumbs::render('tambah-produk') }}
- --}}
+{{ Breadcrumbs::render('tambah-produk') }}
+
 
 <div class="row">
 	<div class="col-md-8 col-lg-12">
@@ -15,7 +15,6 @@ navbar
 			<div class="panel-body">
 				<form action="{{url('user/produk/simpan')}}" method="post" id="form-produk" enctype="multipart/form-data">
 					@csrf
-					<input type="hidden" name="idIkm" value="{{$ikm->IKM_ID}}">
 					<div class="form-group @if($errors->has('ktprdkId')) has-danger @endif">
 						<label>Kategori Produk</label>
 						<div class="form-group">
@@ -28,15 +27,73 @@ navbar
 					</div>			
 					<div class="row">
 						<div class="col-md-6">
-							<div class="form-group form-control-material @if($errors->has('ikmNama')) has-danger @endif">
-								<input type="text" class="form-control" value="{{$ikm->IKM_NAMA}}" id="ikmNama" placeholder="IKM" name="ikmNama">
-								<label>IKM</label>
+							<div class="form-group @if($errors->has('ikmId')) has-danger @endif">
+				                  <div class="col-sm-12">
+				                  	<label>IKM</label>
+				                    <select name="ikmId" class="selectpicker" data-style="btn-white" data-live-search="true" data-size="5">
+				                      <option>(Pilih)</option>
+				                      @foreach($ikm as $dataIkm)
+				                      <option value="{{$dataIkm->IKM_ID}}">{{$dataIkm->IKM_NAMA}}</option>
+				                      @endforeach
+				                    </select>
+				                  </div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group form-control-material @if($errors->has('prdkNama')) has-danger @endif">
 								<input type="text" class="form-control" id="prdkNama" placeholder="Nama Produk" name="prdkNama">
 								<label>Nama Produk</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group form-control-material @if($errors->has('prdkPemasaran')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkPemasaran" placeholder="Pemasaran" name="prdkPemasaran">
+								<label>Pemasaran</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-control-material @if($errors->has('prdkBbbp')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkBbbp" placeholder="BBBP" name="prdkBbbp">
+								<label>BBBP</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group form-control-material @if($errors->has('prdkNilaiProduksi')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkNilaiProduksi" placeholder="Nilai Produksi" name="prdkNilaiProduksi">
+								<label>Nilai produksi</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-control-material @if($errors->has('prdkSatuanKapasitas')) has-danger @endif">
+								<input type="text" class="form-control" id="prdkSatuanKapasitas" placeholder="Satuan kapasitas" name="prdkSatuanKapasitas">
+								<label>Satuan Kapasitas</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-4">
+							<div class="form-group form-control-material @if($errors->has('prdkJumlahKapasitasProduksi')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkJumlahKapasitasProduksi" placeholder="Jumlah Kapasitas Produksi" name="prdkJumlahKapasitasProduksi">
+								<label>Jumlah Kapasitas Produksi</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group form-control-material @if($errors->has('prdkNilaiInvestasi')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkNilaiInvestasi" placeholder="Nilai Investasi" name="prdkNilaiInvestasi">
+								<label>Nilai Investasi</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group form-control-material @if($errors->has('prdkTenagaKerja')) has-danger @endif">
+								<input type="number" class="form-control" id="prdkTenagaKerja" placeholder="Tenaga Kerja" name="prdkTenagaKerja">
+								<label>Tenaga Kerja</label>
 							</div>
 						</div>
 					</div>

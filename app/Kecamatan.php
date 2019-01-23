@@ -33,6 +33,11 @@ class Kecamatan extends Model
         return $this->belongsTo('App\Ikm', 'IKM_KEC', 'id');
     }
 
+    public function event()
+    {
+        return $this->belongsTo('App\Event', 'EVT_KEC', 'id');
+    }
+
     public function desa()
     {
         return $this->hasMany('App\Desa', 'kec_id', 'id');

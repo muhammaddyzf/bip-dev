@@ -16,6 +16,21 @@ class Images extends Model
 
     public function user()
     {
-    	return $this->belongsTo('App\User', 'id', 'ID');
+        return $this->belongsTo('App\User', 'id', 'ID');
+    }
+
+    public function ikm()
+    {
+    	return $this->belongsTo('App\Ikm', 'IKM_ID', 'ID');
+    }
+
+    public function sertifikasi()
+    {
+        return $this->belongsTo('App\Sertifikasi', 'SRT_ID', 'ID');
+    }
+
+    public static function imageDefault()
+    {
+        return $image = "http://www.pinnacleeducations.in/wp-content/uploads/2017/05/no-image.jpg";
     }
 }

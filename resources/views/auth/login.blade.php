@@ -55,9 +55,9 @@
 
             <button type="submit" class="btn btn-success">Login <i class="fa fa-fw fa-unlock-alt"></i></button>
             </form>
-            <a href="{{ route('password.request') }}" class="forgot-password">Forgot password?</a>
+{{--             <a href="{{ route('password.request') }}" class="forgot-password">Forgot password?</a>
             <a href="{{ route('register') }}" class="link-text-color">Create account</a><br>
-            <a href="{{ url("/") }}" class="link-text-color">Home</a>
+            <a href="{{ url("/") }}" class="link-text-color">Home</a> --}}
           </div>
         </div>
       </div>

@@ -13,6 +13,9 @@ navbar
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
 				<a href="{{route('user.ikm.tambah')}}" class="btn btn-white"><i class="fa fa-plus"></i> Tambah </a>
+				<a href="{{route('user.ikm.import')}}" class="btn btn-white pull-right"><i class="fa fa-upload"></i> Import Excel </a>
+				<a href="{{route('user.ikm.download-excel')}}" class="btn btn-white pull-right"><i class="fa fa-download"></i> Download Format Excel </a>
+
 				<br>
 				<table class="table table-bordered table-striped" id="kategori-pengguna">
 					<thead>

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','username', 'api_token', 'name', 
+        'id','name', 'email', 'password','username', 'api_token', 'name', 
     ];
 
     /**
@@ -35,12 +35,18 @@ class User extends Authenticatable
         return $this->hasOne('App\Pengguna', 'USER_ID', 'id');
     }
 
-    public static function getUserName($firstName,$lastName){
-        return $firstName.$lastName;
+    public static function getUserName($name, $unique){
+        $name = str_replace(" ", "", $name).$unique;
+        return strtolower($name);
     }
 
     public function images()
     {
         return $this->hasOne('App\Images', 'ID', 'id');
+    }
+
+    public function sukaProduk()
+    {
+        return $this->belongsTo('App\SukaProduk', 'PNG_ID', 'id');
     }
 }

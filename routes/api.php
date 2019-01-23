@@ -19,45 +19,44 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
     Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
-        Route::post('login', 'API\UserController@login');
-        Route::post('register', 'API\UserController@register');
+        Route::post('login', 'Api\UserController@login');
+        Route::post('register', 'Api\UserController@register');
     });
 
     Route::group(['prefix' => '/produk', 'as' => 'v1.'], function() {
         Route::get('index', 'Api\ProdukController@index');
         Route::get('detail/{id}', 'Api\ProdukController@show');
         Route::get('search', 'Api\ProdukController@getSearchResult');
+
+        Route::get('like/{idProduk}/{idUser}', 'Api\ProdukController@likeProduk');
+        Route::get('rating/{idProduk}/{idUser}/{rating}', 'Api\ProdukController@ratingProduk');
+        Route::get('like-detail/{id}', 'Api\ProdukController@detailLike');
+
+        Route::get('ikm/{id}', 'Api\IkmController@listProduk');
     }); 
 
     Route::group(['prefix' => '/ikm', 'as' => 'v1.'], function() {
         Route::get('index', 'Api\IkmController@index');
         Route::get('detail/{id}', 'Api\IkmController@show');
         Route::get('search', 'Api\IkmController@getSearchResult');
+
+
+        Route::get('agenda/{id}/{keyword}/index', 'Api\EventController@index');
+        Route::get('agenda/detail/{id}', 'Api\EventController@show');
+        Route::post('agenda/scan', 'Api\EventController@scan');
     });
+
+
+    Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
+        Route::post('update', 'Api\IkmController@updateUser');
+     });
 });
 
-Route::group(['middleware' => 'auth:api'], function(){
+Route::group(['middleware' => ['api', 'auth:api']], function(){
     Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
         Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
-            // Route::post('details', 'API\UserController@details');
             Route::get('show/{id}', 'Api\UserController@show');
-            Route::post('update/{id}', 'Api\UserController@update');
+            // Route::post('update', 'Api\UserController@update');
          });
     });
 });
-
-
-
-
-// Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
-//     Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
-    	
-//     	// route user
-//     	Route::post('/login', 'Api\LoginController@index');
-//     	Route::post('/register', 'Api\UserController@register');
-//     	Route::get('/update/{id}', 'Api\UserController@update');
-//     	Route::get('/show/{id}', 'Api\UserController@show');
-//     	Route::post('/update/{id}', 'Api\UserController@update');
-
-//     });
-// });

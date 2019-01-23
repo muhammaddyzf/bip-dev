@@ -13,7 +13,7 @@ navbar
 	<div class="col-md-8 col-lg-12">
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				<form action="{{url('user/ikm/simpan')}}" method="post" id="form-ikm">
+				<form action="{{url('user/ikm/simpan')}}" method="post" id="form-ikm" enctype="multipart/form-data">
 					@csrf
 					
 					<div class="panel panel-default">
@@ -57,8 +57,23 @@ navbar
 										</div>
 										<div class="col-md-6">
 											<div class="form-group form-control-material @if($errors->has('ikmDtBerdiri')) has-danger @endif">
-												<input type="text" class="form-control" id="ikmDtBerdiri" placeholder="Tanggal Pendirian" name="ikmDtBerdiri">
+												<input type="text" class="form-control datepicker" id="ikmDtBerdiri" placeholder="Tanggal Pendirian" name="ikmDtBerdiri">
 												<label>Tanggal Pendirian</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmThnDiKeluarkanIjin')) has-danger @endif">
+												<input type="text" class="form-control" id="ikmThnDiKeluarkanIjin" placeholder="YYYY" name="ikmThnDiKeluarkanIjin">
+												<label>Tahun Dikelarkan Ijin</label>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmBentukBadan')) has-danger @endif">
+												<input type="text" class="form-control" id="ikmBentukBadan" placeholder="Bentuk Badan" name="ikmBentukBadan">
+												<label>Bentuk Badan</label>
 											</div>
 										</div>
 									</div>
@@ -85,7 +100,7 @@ navbar
 									</div>
 
 									<div class="row">
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif">
 												<select name="provinsi" class="form-control">
 													<option value="">(Pilih)</option>
@@ -97,49 +112,72 @@ navbar
 												<label>Provinsi</label>
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif">				
 												<select name="kabkot" class="form-control">
 													<option value="">(Pilih)</option>
-													@foreach ($kabkot as $dataKabkot)
+													{{-- @foreach ($kabkot as $dataKabkot)
 													<option value="{{ $dataKabkot->id }}">{{ $dataKabkot->name }}</option>
-													@endforeach
+													@endforeach --}}
 												</select>
 												<label>Kabkot</label>
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif">				
 												<select name="kecamatan" class="form-control">
 													<option value="">(Pilih)</option>
-													@foreach ($kecamatan as $dataKecamatan)
+													{{-- @foreach ($kecamatan as $dataKecamatan)
 													<option value="{{ $dataKecamatan->id }}">{{ $dataKecamatan->name }}</option>
-													@endforeach
+													@endforeach --}}
 												</select>
 												<label>Kecamatan</label>
 											</div>
 										</div>
-										{{-- <div class="col-md-3">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('desa')) has-danger @endif">	
 												<select name="desa" class="form-control">
 													<option value="">(Pilih)</option>
-													@foreach ($desa as $dataDesa)
+													{{-- @foreach ($desa as $dataDesa)
 													<option value="{{ $dataDesa->id }}">{{ $dataDesa->name }}</option>
-													@endforeach
+													@endforeach --}}
 												</select>
 												<label>Desa</label>
 											</div>
-										</div> --}}
+										</div>
 									</div>
 									<div class="form-group form-control-material @if($errors->has('ikmAlmtDet')) has-danger @endif">
 										<textarea class="form-control" id="ikmAlmtDet" placeholder="Alamat" name="ikmAlmtDet"></textarea>
 										<label>Alamat</label>
 									</div>
-
-									<div class="form-group form-control-material @if($errors->has('ikmKet')) has-danger @endif">
-										<textarea class="form-control" id="ikmKet" name="ikmKet"></textarea>
-										<label>Keterangan IKM</label>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmLati')) has-danger @endif">
+												<input type="text" class="form-control" id="ikmLati" placeholder="Latitude" name="ikmLati">
+												<label>Latitude</label>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmLongi')) has-danger @endif">
+												<input type="text" class="form-control" id="ikmLongi" placeholder="Longitude" name="ikmLongi">
+												<label>Longitude</label>
+											</div>
+										</div>
 									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmKet')) has-danger @endif">
+												<textarea class="form-control" id="ikmKet" name="ikmKet"></textarea>
+												<label>Keterangan IKM</label>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmImage')) has-danger @endif">
+												<input type="file" class="form-control" id="ikmImage" placeholder="Image" name="ikmImage">
+											</div>
+										</div>
+									</div>
+
 								</div>
 							</div>
 						</div>

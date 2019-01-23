@@ -13,9 +13,14 @@ class Desa extends Model
         return $this->belongsTo('App\Ikm', 'IKM_DESA', 'id');
     }
 
+    public function event()
+    {
+        return $this->belongsTo('App\Event', 'EVT_DESA', 'id');
+    }
+
     public function kecamatan()
     {
-        return $this->belongsTo('App\kecamatan','id', 'kec_id');
+        return $this->belongsTo('App\Kecamatan','id', 'kec_id');
     }
 
 }

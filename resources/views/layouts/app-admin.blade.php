@@ -388,6 +388,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
             var url = '{{ url('user/provinsi') }}'+'/'+ $(this).val() + '/kabkot/';
 
             $.get(url, function(data) {
+               console.log(data);
                 var select = $('form select[name= kabkot]');
 
                 select.empty();

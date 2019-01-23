@@ -32,4 +32,9 @@ class Provinsi extends Model
     {
         return $this->belongsTo('App\Ikm', 'IKM_PROV', 'id');
     }
+
+    public function event()
+    {
+        return $this->belongsTo('App\Event', 'EVT_PROV', 'id');
+    }
 }

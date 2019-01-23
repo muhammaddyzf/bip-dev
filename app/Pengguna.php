@@ -17,4 +17,9 @@ class Pengguna extends Model
     {
         return $this->belongsTo('App\USER','id', 'USER_ID');
     }
+
+    public function kategoriPengguna()
+    {
+    	return $this->hasOne('App\KategoriPengguna', 'KTPNG_ID', 'KTPNG_ID');
+    }
 }

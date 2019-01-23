@@ -18,23 +18,29 @@ Route::get('/', function () {
 
 Auth::routes();
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-
-
+    Route::get('test-update-user', function(){
+        return view('edit-user');
+    });
 
 Route::group(['prefix' => 'user',  'middleware' => 'auth'], function()
 {
-	Route::resource('users', 'UserController');
+
+	// Route::resource('users', 'UserController');
     Route::get('dashboard', 'DashboardController@index')->name('user.dashboard');
 
     //Route IKM
     Route::get('ikm', 'IkmController@index')->name('user.ikm');
     Route::get('ikm/tambah', 'IkmController@create')->name('user.ikm.tambah');
+    Route::get('ikm/import', 'IkmController@import')->name('user.ikm.import');
+    Route::get('ikm/download-excel', 'IkmController@downloadExcel')->name('user.ikm.download-excel');
+
     Route::post('ikm/simpan', 'IkmController@store')->name('user.ikm.simpan');
     Route::get('ikm/data-ikm', 'IkmController@getData')->name('user.ikm.get-data');
+    Route::get('ikm/edit/{id}', 'IkmController@edit')->name('user.ikm.edit');
+    Route::post('ikm/update/{id}', 'IkmController@update')->name('user.ikm.update');
+    Route::get('ikm/produk/{id}', 'IkmController@produk')->name('user.ikm.produk');
+    Route::get('ikm/sertifikasi/{id}', 'IkmController@sertifikasi')->name('user.ikm.sertifikasi');
+    Route::get('ikm/event/{id}', 'IkmController@event')->name('user.ikm.event');
     
     //Route Pasar Tradisional
     Route::get('pasar-tradisional', 'PasarTradisionalController@index')->name('user.pasar-tradisional');
@@ -71,6 +77,15 @@ Route::group(['prefix' => 'user',  'middleware' => 'auth'], function()
         Route::get('kategori-pengguna/edit/{id}', 'KategoriPenggunaController@edit')->name('user.pengguna.kategori-pengguna.edit');
         Route::post('kategori-pengguna/simpan', 'KategoriPenggunaController@store')->name('user.pengguna.kategori-pengguna.simpan');
         Route::post('kategori-pengguna/update/{id}', 'KategoriPenggunaController@update')->name('user.pengguna.kategori-pengguna.update');
+
+
+        Route::get('list', 'PenggunaController@index')->name('user.pengguna.list');
+        Route::get('data-pengguna', 'PenggunaController@getData')->name('user.pengguna.data-pengguna');
+        Route::get('tambah', 'PenggunaController@create')->name('user.pengguna.tambah');
+        Route::post('simpan', 'PenggunaController@store')->name('user.pengguna.simpan');
+        Route::get('edit/{id}', 'PenggunaController@edit')->name('user.pengguna.edit');
+        Route::get('hapus/{id}', 'PenggunaController@destroy')->name('user.pengguna.hapus');
+        Route::post('update/{id}', 'PenggunaController@update')->name('user.pengguna.update');
     });
 
     //Route Kategori Produk
@@ -84,8 +99,16 @@ Route::group(['prefix' => 'user',  'middleware' => 'auth'], function()
         Route::post('kategori-produk/update/{id}', 'KategoriProdukController@update')->name('user.kategori-produk.update');
 
 
-        Route::get('tambah/{id}', 'ProdukController@create')->name('user.produk.tambah');
+        Route::get('tambah', 'ProdukController@create')->name('user.produk.tambah');
         Route::post('simpan', 'ProdukController@store')->name('user.produk.simpan');
+        Route::get('list', 'ProdukController@index')->name('user.produk.list');
+        Route::get('data-produk', 'ProdukController@getData')->name('user.produk.data-produk');
+        Route::get('edit/{id}', 'ProdukController@edit')->name('user.produk.edit');
+        Route::post('update/{id}', 'ProdukController@update')->name('user.produk.update');
+        Route::get('hapus/{id}', 'ProdukController@destroy')->name('user.produk.hapus');
+
+
+        Route::get('generate-qr/{id}', 'ProdukController@generateQr')->name('user.produk.generate-qr');  
     });
 
     //Route Kategori Sertifikasi
@@ -98,18 +121,51 @@ Route::group(['prefix' => 'user',  'middleware' => 'auth'], function()
         Route::post('kategori-sertifikasi/simpan', 'KategoriSertifikasiController@store')->name('user.sertifikasi.kategori-sertifikasi.simpan');
         Route::post('kategori-sertifikasi/update/{id}', 'KategoriSertifikasiController@update')->name('user.sertifikasi.kategori-sertifikasi.update');
 
+        Route::get('list', 'SertifikasiController@index')->name('user.sertifikasi.list');
+        Route::get('tambah', 'SertifikasiController@create')->name('user.sertifikasi.tambah');
+        Route::post('simpan', 'SertifikasiController@store')->name('user.sertifikasi.simpan');
+        Route::get('data-sertifikasi', 'SertifikasiController@getData')->name('user.sertifikasi.data-sertifikasi');
+        Route::get('hapus/{id}', 'SertifikasiController@destroy')->name('user.sertifikasi.hapus');
 
-        // Route::get('tambah/{id}', 'SertifikasiController@create')->name('user.sertifikasi.tambah');
-        // Route::get('simpan', 'SertifikasiController@store')->name('user.sertifikasi.simpan');
+
+        //ikm to sertifikasi
+        Route::get('tambah-ikm/{id}', 'SertifikasiController@createIkmToSertifikasi')->name('user.sertifikasi.tambah-ikm');
+        Route::post('simpan-ikm', 'SertifikasiController@storeIkmToSertifikasi')->name('user.sertifikasi.simpan-ikm');
+        
     });
 
+    //Route Event
+    Route::group(['prefix' => 'event'], function(){
+        Route::get('tambah/{id}', 'EventController@create')->name('user.event.tambah');  
+        Route::get('data-event', 'EventController@getData')->name('user.event.data-event');  
+        Route::post('simpan', 'EventController@store')->name('user.event.simpan');    
+
+        Route::get('generate-qr/{id}', 'EventController@generateQr')->name('user.event.generate-qr'); 
+
+        Route::get('index', 'EventController@index')->name('user.event.index'); 
+        Route::get('tambah-event', 'EventController@createEvent')->name('user.event.tambah-event');  
+        Route::get('edit/{id}', 'EventController@edit')->name('user.event.edit');
+        Route::post('update/{id}', 'EventController@update')->name('user.event.update');
+
+        Route::get('tambah-ikm/{id}', 'EventController@createIkm')->name('user.event.tambah-ikm');
+        Route::get('data-ikmToEvent/{id}', 'EventController@getDataIkmToEvent')->name('user.event.data-ikmToEvent');
+    });
+
+    // Route Ikm To Event
+    Route::group(['prefix' => 'ikm-to-event'], function(){
+        Route::get('tambah/{id}', 'IkmToEventController@create')->name('user.ikm-to-event.tambah');
+        Route::post('kirim-undangan', 'IkmToEventController@kirimUndangan')->name('user.ikm-to-event.kirim-undangan');
+    });
 
     //Route Wilayah
     Route::get('provinsi/{provinsi}/kabkot', 'ProvinsiController@getKabkot');
     Route::get('kabkot/{kabkot}/kecamatan', 'KabkotController@getKecamatan');
-    Route::get('kecamatan/{kecamatan}/desa', 'KecamatanController@getdesagetdesa');
+    Route::get('kecamatan/{kecamatan}/desa', 'KecamatanController@getdesa');
 
     // Route::get('pasar-modern', 'PasarModernController@index')->name('user.pasar-modern');
-    // Route::get('sentra', 'PasarTradisionalController@index')->name('user.sentra');
-    
+    // Route::get('sentra', 'PasarTradisionalController@index')->name('user.sentra'); 
+});
+
+Route::get('qr-code', function () {
+    return QrCode::size(500)->generate('Welcome to kerneldev.com!');
 });

@@ -43,4 +43,9 @@ class Ikm extends Model
     {
     	return $this->hasOne('App\Desa', 'id', 'IKM_DESA');
     }
+
+    public function IkmToEvent()
+    {
+        return $this->hasMany('App\IkmToEvent', 'IKM_ID', 'IKM_ID');
+    }
 }

@@ -10,6 +10,7 @@ use App\Images;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use File;
+use App\Notifications;
 
 class UserController extends Controller 
 {
@@ -38,8 +39,13 @@ public $successStatus = 200;
             $user 	= Auth::user(); 
             $token 	= $user->createToken('MyApp')-> accessToken; 
             $login 	= User::where('email', request('email'))->first();
-
             $createToken = User::where('id', $login->id)->update(['token' => $token]);
+
+            if($login->images->IMG_NAMA == ""){
+                $images = Images::imageDefault();
+            }else{
+                $images = url($login->images->IMG_NAMA);
+            }
 
             $data = array(
 	            'id_user'       => $login->id,
@@ -55,9 +61,9 @@ public $successStatus = 200;
 	            'alamat'        => $login->pengguna->ALMNT,
 	            'username'      => $login->username,
 	            'hak_akses'     => $login->pengguna->KTPNG_ID,
-	            'avatar'        => 'https=>//s-media-cache-ak0.pinimg.com/736x/a1/37/55/a13755ebfcb61591acea2ab2159d55cd.jpg',
-	            'tanggal_masuk' => $login->created_at,
-	            'tanggal_daftar'=> $login->updated_at,
+	            'avatar'        => $images,
+	            'tanggal_masuk' => strtotime($login->created_at),
+	            'tanggal_daftar'=> strtotime($login->updated_at),
         	);
 
         	$res['is_ok']   = true;
@@ -86,15 +92,14 @@ public $successStatus = 200;
             'name' 		 => 'required', 
             'email' 	 => 'required|email', 
             'password'   => 'required', 
-            'username'   => 'required', 
-            'c_password' => 'required|same:password', 
         ]);
 
 		if ($validator->fails()) { 
 		    return response()->json(['error'=>$validator->errors()], 401);            
 		}
 		$input 				= $request->all(); 
-		$input['password'] 	= bcrypt($input['password']); 
+        $input['password']  = bcrypt($input['password']); 
+		$input['username'] 	= User::getUserName($input['name'], date('His')); 
 		$user 				= User::create($input); 
 		
 		// $idPengguna = 'PNG    '.date('His');
@@ -107,7 +112,7 @@ public $successStatus = 200;
         $pengguna->PNG_ALMNT	= '';
         $pengguna->PNG_EMAIL	= $input['email'];
         $pengguna->USER_ID 		= $user['id'];
-    	$pengguna->KTPNG_ID		= 1;
+    	$pengguna->KTPNG_ID		= 'KTPNGID4787221610';
     	$pengguna->PNG_NAMA		= $input['name'];
     	$pengguna->PNG_DTINS	= $this->dateInsert;
     	$pengguna->PNG_DTUPDT	= $this->dateUpdate;
@@ -116,7 +121,7 @@ public $successStatus = 200;
     	$pengguna->save();
 
 
-        $imagesDefault = 'images/user/default-images-user.png';
+        $imagesDefault = "";
         $images = new Images;
         $images->IMG_ID       = $this->idImages;
         $images->ID           = $user['id'];
@@ -134,7 +139,14 @@ public $successStatus = 200;
     	$updateToken->token 	= $token;
     	$updateToken->save();
 
+        Notifications::mailRegistration($user, $input);
+
     	$user = User::find($user['id']);
+        if($user->images['IMG_NAMA'] == ""){
+            $images = Images::imageDefault();
+        }else{
+            $images = url($user->images['IMG_NAMA']);
+        }
         $data = array(
         	'id_user'		=> $user->id,
 	        'id_ikm'		=> '',
@@ -149,7 +161,7 @@ public $successStatus = 200;
 	        'alamat'		=> '',
 	        'username'		=> $user->username,
 	        'hak_akses'		=> $user->pengguna->KTPNG_ID,
-	        'avatar'		=> $user->images['IMG_NAMA'],
+	        'avatar'		=> $images,
 	        'tanggal_masuk'	=> $user->created_at,
 	        'tanggal_daftar'=> $user->updated_at,
         );
@@ -184,6 +196,13 @@ public $successStatus = 200;
     public function show($id)
     {
         $user = User::find($id);
+
+        if($user->images['IMG_NAMA'] == ""){
+            $images = Images::imageDefault();
+        }else{
+            $images = url($user->images['IMG_NAMA']);
+        }
+
         $data = array(
             'id_user'       => $user->id,
             'id_ikm'        => $user->pengguna->IKM_ID,
@@ -198,9 +217,9 @@ public $successStatus = 200;
             'alamat'        => $user->pengguna->ALMNT,
             'username'      => $user->username,
             'hak_akses'     => $user->pengguna->KTPNG_ID,
-            'avatar'        => $user->images['IMG_NAMA'],
-            'tanggal_masuk' => $user->created_at,
-            'tanggal_daftar'=> $user->updated_at,
+            'avatar'        => $images,
+            'tanggal_masuk' => strtotime($user->created_at),
+            'tanggal_daftar'=> strtotime($user->updated_at),
         );
 
         if($data){
@@ -212,9 +231,10 @@ public $successStatus = 200;
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-    	$idUser 	 = Auth::id();
+        $id          = $request->id_user;
+    	// $idUser 	 = Auth::id();
         $hasher      = app()->make('hash');
         $oldPassword = "";
         $newPassword = "";
@@ -244,7 +264,7 @@ public $successStatus = 200;
                         , 'PNG_PEND'    => $request->input('pendidikan')
                         , 'PNG_ALMNT'   => $request->input('alamat')
                         , 'PNG_NIK'     => $request->input('nik')
-                        , 'PNG_USERUPDT'=> Auth::id()
+                        , 'PNG_USERUPDT'=> $id
 
                     ]);
 
@@ -253,30 +273,31 @@ public $successStatus = 200;
         $foto = "";
         if($request->hasFile('lampiran')){
             $getImages       = Images::where('ID', $id)->first();
-            $originalName    = $request->file('lampiran');
+            $originalName    = $request->file('lampiran')->getClientOriginalName();
             $sizeFile        = getimagesize($originalName);
-            // if($sizeFile[0] == 500 && $sizeFile[1] == 500){
-            
+
             $imageName = time().'.'.$request->lampiran->getClientOriginalExtension();
             $foto      = 'images/user/'.$imageName;
 
-            if(substr($getImages->IMG_NAMA, 0, 11) != 'default-images-user.png'){
-
+            if($getImages->IMG_NAMA == ""){
+                $request->lampiran->move(public_path('/images/user/'), $imageName);
+            }else{
                 File::delete(public_path($getImages->IMG_NAMA));
-
                 $request->lampiran->move(public_path('/images/user/'), $imageName);
             }
-
-            // }else{
-            //     return 0;
-            // }
 
             $images = Images::where('ID', $id)
                       ->update([
                             'IMG_NAMA'      => $foto,
                             'IMG_DTUPDT'    => $this->dateUpdate,
-                            'IMG_USERUPDT'  => $idUser,
+                            'IMG_USERUPDT'  => $id,
                       ]);
+        }
+
+        if($user->images['IMG_NAMA'] == ""){
+            $images = Images::imageDefault();
+        }else{
+            $images = url($user->images['IMG_NAMA']);
         }
 
         $data = array(
@@ -293,9 +314,9 @@ public $successStatus = 200;
             'alamat'        => $user->pengguna->PNG_ALMNT,
             'username'      => $user->username,
             'hak_akses'     => $user->pengguna->KTPNG_ID,
-            'avatar'        => $user->images['IMG_NAMA'],
-            'tanggal_masuk' => $user->created_at,
-            'tanggal_daftar'=> $user->updated_at,
+            'avatar'        => $images,
+            'tanggal_masuk' => strtotime($user->created_at),
+            'tanggal_daftar'=> strtotime($user->updated_at),
         );
 
         $res['is_ok']   = true;

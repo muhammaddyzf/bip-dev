@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IkmToSertifikasi extends Model
 {
+	public $timestamps = false;
     protected $table = "tb_ikm_to_sertifikasi";
 
 	public function ikm()
