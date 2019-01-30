@@ -20,7 +20,7 @@ class PasarModernController extends Controller
      */
     public function index()
     {
-        return view('user.pasar-modern.index');
+        return view('admin.pasar-modern.index');
     }
 
     public function getData()
@@ -41,11 +41,11 @@ class PasarModernController extends Controller
                      return $row->kabkot->name ;
                  })
                 ->addColumn('nama_toko', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/edit/pasar-modern/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_toko.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/edit/pasar-modern/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_toko.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/hapus/pasar-modern/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" onclick="confirmLink(this)" data-href="'.url('admin/hapus/pasar-modern/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -70,7 +70,7 @@ class PasarModernController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
         );
-        return view('user.pasar-modern.add')->with($data);
+        return view('admin.pasar-modern.add')->with($data);
     }
 
     /**
@@ -108,7 +108,7 @@ class PasarModernController extends Controller
 
 
         $data->save();
-        return redirect('user/pasar-modern')->with('message','Transaction Success');
+        return redirect('admin/pasar-modern')->with('message','Transaction Success');
     }
 
     /**
@@ -137,7 +137,7 @@ class PasarModernController extends Controller
             'kecamatan'         => Kecamatan::all(),
             'desa'              => Desa::all()
         );
-        return view('user.pasar-modern.edit')->with($data);
+        return view('admin.pasar-modern.edit')->with($data);
     }
 
     /**
@@ -176,7 +176,7 @@ class PasarModernController extends Controller
 
 
         $data->save();
-        return redirect('user/pasar-modern')->with('message','Transaction Success');
+        return redirect('admin/pasar-modern')->with('message','Transaction Success');
     }
 
     /**
@@ -189,6 +189,6 @@ class PasarModernController extends Controller
     {
         $data = PasarModern::find($id);
         $data->delete();
-        return redirect('user/pasar-modern')->with('message','Transaction Success');
+        return redirect('admin/pasar-modern')->with('message','Transaction Success');
     }
 }

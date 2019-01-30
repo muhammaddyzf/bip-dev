@@ -20,7 +20,7 @@ class PasarTradisionalController extends Controller
      */
     public function index()
     {
-        return view('user.pasar-tradisional.index');
+        return view('admin.pasar-tradisional.index');
     }
 
     public function getData()
@@ -41,11 +41,11 @@ class PasarTradisionalController extends Controller
                      return $row->kabkot->name ;
                  })
                 ->addColumn('nama_pasar', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/edit/pasar-tradisional/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_pasar.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/edit/pasar-tradisional/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_pasar.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/hapus/pasar-tradisional/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" onclick="confirmLink(this)" data-href="'.url('admin/hapus/pasar-tradisional/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -70,7 +70,7 @@ class PasarTradisionalController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
         );
-        return view('user.pasar-tradisional.add')->with($data);
+        return view('admin.pasar-tradisional.add')->with($data);
     }
 
     /**
@@ -112,7 +112,7 @@ class PasarTradisionalController extends Controller
         $data->pengelola       = $request->pengelola;
 
         $data->save();
-        return redirect('user/pasar-tradisional')->with('message','Transaction Success');
+        return redirect('admin/pasar-tradisional')->with('message','Transaction Success');
     }
 
     /**
@@ -141,7 +141,7 @@ class PasarTradisionalController extends Controller
             'kecamatan'         => Kecamatan::all(),
             'desa'              => Desa::all()
         );
-        return view('user.pasar-tradisional.edit')->with($data);
+        return view('admin.pasar-tradisional.edit')->with($data);
     }
 
     /**
@@ -184,7 +184,7 @@ class PasarTradisionalController extends Controller
         $data->pengelola       = $request->pengelola;
 
         $data->save();
-        return redirect('user/pasar-tradisional')->with('message','Transaction Success');
+        return redirect('admin/pasar-tradisional')->with('message','Transaction Success');
     }
 
     /**
@@ -197,6 +197,6 @@ class PasarTradisionalController extends Controller
     {
         $data = PasarTradisional::find($id);
         $data->delete();
-        return redirect('user/pasar-tradisional')->with('message','Transaction Success');
+        return redirect('admin/pasar-tradisional')->with('message','Transaction Success');
     }
 }

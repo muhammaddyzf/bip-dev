@@ -27,7 +27,7 @@ class KategoriPenggunaController extends Controller
     public function index()
     {
         $data = KategoriPengguna::all();
-        return view('user.kategori-pengguna.index', compact('data'));
+        return view('admin.kategori-pengguna.index', compact('data'));
     }
 
     public function getData()
@@ -37,11 +37,11 @@ class KategoriPenggunaController extends Controller
         $data = Datatables::of($KategoriPengguna)
                
                 ->addColumn('KTPNG_NAMA', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/pengguna/kategori-pengguna/edit/').'" data-id="'.$row->KTPNG_ID.'" onclick="actionButton(this)">'.$row->KTPNG_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/pengguna/kategori-pengguna/edit/').'" data-id="'.$row->KTPNG_ID.'" onclick="actionButton(this)">'.$row->KTPNG_NAMA.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/pengguna/kategori-pengguna/hapus/'.$row->KTPNG_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a disabled href="#" onclick="confirmLink(this)" data-href="'.url('admin/pengguna/kategori-pengguna/hapus/'.$row->KTPNG_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -60,7 +60,7 @@ class KategoriPenggunaController extends Controller
      */
     public function create()
     {
-        return view('user.kategori-pengguna.add');
+        return view('admin.kategori-pengguna.add');
     }
 
     /**
@@ -90,7 +90,7 @@ class KategoriPenggunaController extends Controller
         $data->KTPNG_USERUPDT= $idUser;
 
         $data->save();
-        return redirect('user/pengguna/kategori-pengguna')->with('message','Transaction Success');
+        return redirect('admin/pengguna/kategori-pengguna')->with('message','Transaction Success');
     }
 
     /**
@@ -114,7 +114,7 @@ class KategoriPenggunaController extends Controller
     {
         $data = KategoriPengguna::where('KTPNG_ID', $id)->first();
 
-        return view('user.kategori-pengguna.edit', compact('data'));
+        return view('admin.kategori-pengguna.edit', compact('data'));
     }
 
     /**
@@ -140,7 +140,7 @@ class KategoriPenggunaController extends Controller
             'KTPNG_USERUPDT'=> $idUser,
         ]);
 
-        return redirect('user/pengguna/kategori-pengguna')->with('message','Transaction Success'); 
+        return redirect('admin/pengguna/kategori-pengguna')->with('message','Transaction Success'); 
     }
 
     /**
@@ -155,9 +155,9 @@ class KategoriPenggunaController extends Controller
         if($cek->count() == 0){
             $data = KategoriPengguna::where('KTPNG_ID', $id);
             $data->delete();
-            return redirect('user/pengguna/kategori-pengguna')->with('message','Transaction Success');
+            return redirect('admin/pengguna/kategori-pengguna')->with('message','Transaction Success');
         }else{
-            return redirect('user/pengguna/kategori-pengguna')->with('message-failed','Data Sedang Digunakan');
+            return redirect('admin/pengguna/kategori-pengguna')->with('message-failed','Data Sedang Digunakan');
         }
 
     }

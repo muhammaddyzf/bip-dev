@@ -349,7 +349,9 @@ class ProdukController extends Controller
                     $images = $item->IMG_NAMA;
                 }
                 $data[] = array(
-                    'id_user'   => $item->PNG_ID,
+                    'id_user'   => $item->id,
+                    'email'     => $item->email,
+                    'nik'       => $item->PNG_NIK,
                     'thumbnail' => $images,
                     'nama'      => $item->name,
                 );

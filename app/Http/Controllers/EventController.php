@@ -32,7 +32,7 @@ class EventController extends Controller
 
     public function index()
     {
-    	return view('user.event.index');
+    	return view('admin.event.index');
     }
 
 	public function create(Request $request, $id)
@@ -45,12 +45,12 @@ class EventController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
 		);
-		return view('user.event.add')->with($data);
+		return view('admin.event.add')->with($data);
 	}
 
 	public function createEvent(Request $request)
 	{
-		$sertifikasi = Sertifikasi::all();
+		$sertifikasi = Sertifikasi::where('SRT_NEEDEVENT', 1)->get();
 
 		$data = array(
 			'sertifikasi' => $sertifikasi,
@@ -59,7 +59,7 @@ class EventController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
 		);
-		return view('user.event.add-event')->with($data);
+		return view('admin.event.add-event')->with($data);
 	}
 
 	public function store(Request $request)
@@ -136,7 +136,7 @@ class EventController extends Controller
         if($request->hiddenId != 0){
         	return redirect()->back()->with('message','Transaction Success');
     	}else{
-    		return redirect('user/event/index')->with('message','Transaction Success');
+    		return redirect('admin/event/index')->with('message','Transaction Success');
     	}
 	}
 
@@ -157,7 +157,7 @@ class EventController extends Controller
             'desa'     => Desa::where('id', $event->EVT_DESA)->first(),
             'image'    => Images::where('ID', $id)->first(),
 		);
-		return view('user.event.edit')->with($data);
+		return view('admin.event.edit')->with($data);
 	}
 
 	public function update(Request $request, $id)
@@ -234,7 +234,7 @@ class EventController extends Controller
 
         ]);   
 
-		return redirect('user/event/index')->with('message','Transaction Success');
+		return redirect('admin/event/index')->with('message','Transaction Success');
 	}
 
 	public function getData()
@@ -242,7 +242,7 @@ class EventController extends Controller
 		$event = Event::all();
 		$data = Datatables::of($event)
 				->addColumn('EVT_NAMA', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/event/edit/').'" data-id="'.$row->EVT_ID.'" onclick="actionButton(this)">'.$row->EVT_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/event/edit/').'" data-id="'.$row->EVT_ID.'" onclick="actionButton(this)">'.$row->EVT_NAMA.'</a>'; 
                 })
 				->editColumn('EVT_DTDARI', function ($event) {
 	                 return $event->EVT_DTDARI ? with(new Carbon($event->EVT_DTDARI))->format('d/m/Y') : '';})
@@ -250,11 +250,11 @@ class EventController extends Controller
 	                 return $event->EVT_DTSAMPAI ? with(new Carbon($event->EVT_DTSAMPAI))->format('d/m/Y') : '';})
                 ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('user/event/hapus/'.$row->EVT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('admin/event/hapus/'.$row->EVT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
-                                <a href="'.url('user/event/tambah-ikm/'.$row->EVT_ID).'" type="button" class="btn btn-primary btn-sm" title="Tambah IKM"><i class="fa fa-institution"></i>
+                                <a href="'.url('admin/event/tambah-ikm/'.$row->EVT_ID).'" type="button" class="btn btn-primary btn-sm" title="Tambah IKM"><i class="fa fa-institution"></i>
                                 </a>
-                                <a href="'.url('user/event/generate-qr/'.$row->EVT_ID).'" target="blank" type="button" class="btn btn-default btn-sm" title="Generate QR Code"><i class="fa fa-qrcode"></i>
+                                <a href="'.url('admin/event/generate-qr/'.$row->EVT_ID).'" target="blank" type="button" class="btn btn-default btn-sm" title="Generate QR Code"><i class="fa fa-qrcode"></i>
                                 </a>
                             </div>
                             ';
@@ -283,7 +283,7 @@ class EventController extends Controller
 			'ikmToEvent' => $ikmToEvent,
 		);
 
-		return view('user.event.add-ikm')->with($data);
+		return view('admin.event.add-ikm')->with($data);
 	}
 
 	public function getDataIkmToEvent(Request $request, $id)
@@ -317,7 +317,7 @@ class EventController extends Controller
 					}
                     return $html;
                 })
-                ->addColumn('UNDANGAN', 'user.event.action-undangan')
+                ->addColumn('UNDANGAN', 'admin.event.action-undangan')
                 ->rawColumns(['IKM_NAMA','HISTORY_PELATIHAN','UNDANGAN','confirmed'])
                 ->make(true);
 

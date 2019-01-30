@@ -13,45 +13,34 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li ><a href="{{route('user.dashboard')}}"><i class="fa fa-bar-chart-o"></i><span>Dashboard</span></a></li>
+      <li ><a href="{{route('admin.dashboard')}}"><i class="fa fa-bar-chart-o"></i><span>Dashboard</span></a></li>
       <li class="{{ Request::is([
-            'user/ikm', 'user/ikm*'
+            'admin/ikm', 'admin/ikm*'
             ]) ? 'active':''}}">
-            <a href="{{route('user.ikm')}}"><i class="fa fa-institution"></i>
+            <a href="{{route('admin.ikm')}}"><i class="fa fa-institution"></i>
               <span>IKM</span>
             </a>
       </li>
-      <li ><a href="{{route('user.pasar-tradisional')}}"><i class="fa fa-home"></i><span>Pasar Tradisional</span></a></li>
-      <li ><a href="{{route('user.pasar-modern')}}"><i class="fa fa-shopping-cart"></i><span>Pasar Modern</span></a></li>
-      <li ><a href="{{route('user.sentra')}}"><i class="fa fa-building"></i><span>Sentra</span></a></li>
-     {{--  <li class="hasSubmenu">
-        <a href="#member-menu"><i class="fa fa-users"></i><span>Member</span></a>
-        <ul id="member-menu" class="{{ Request::is('admin/member/*') ? 'in':''}}">
-          <li class="hasSubmenu ">
-            <a href="#instructor-menu"><i class="fa fa-user-plus"></i><span>Instructor</span></a>
-            <ul id="instructor-menu" class="{{ Request::is('admin/member/instructor/*') ? 'in':''}}">
-              <li class="{{ Request::is('admin/member/instructor/reguler') ? 'active':''}}"><a href="{{route('instructor.reguler')}}"><span>Regular</span></a></li>
-              <li class="{{ Request::is('admin/member/instructor/master') ? 'active':''}}"><a href="{{route('instructor.master')}}"><span>Master</span></a></li>
-            </ul>
-          </li>
-          <li class="{{ Request::is('admin/member/student') ? 'active':''}}"><a href="{{route('student')}}"><i class="fa fa-user"></i><span>Student</span></a></li>
-        </ul>
-      </li> --}}
+      <li ><a href="{{route('admin.pasar-tradisional')}}"><i class="fa fa-home"></i><span>Pasar Tradisional</span></a></li>
+      <li ><a href="{{route('admin.pasar-modern')}}"><i class="fa fa-shopping-cart"></i><span>Pasar Modern</span></a></li>
+      <li ><a href="{{route('admin.sentra')}}"><i class="fa fa-building"></i><span>Sentra</span></a></li>
+      <li ><a href="{{route('importir.index')}}"><i class="fa fa-flag"></i><span>Importir</span></a></li>
+      <li ><a href="{{route('eksportir.index')}}"><i class="fa fa-flag"></i><span>Eksportir</span></a></li>
       
       <li class="hasSubmenu">
         <a href="#produk"><i class="fa fa-dropbox"></i><span>Produk</span></a>
         <ul id="produk" class="{{ Request::is([
-            'user/produk', 'user/produk/*'
+            'admin/produk', 'admin/produk/*'
           ]) ? 'in':''}}">
           <li class="{{ Request::is([
-              'user/produk/kategori-produk', 'user/produk/kategori-produk/*'
+              'admin/produk/kategori-produk', 'admin/produk/kategori-produk/*'
             ]) ? 'active':''}}">
-            <a href="{{route('user.produk.kategori-produk')}}"><span>Kategori Produk</span></a>
+            <a href="{{route('admin.produk.kategori-produk')}}"><span>Kategori Produk</span></a>
           </li>
           <li class="{{ Request::is([
-              'user/produk/list', 'user/produk/list/*'
+              'admin/produk/list', 'admin/produk/list/*'
             ]) ? 'active':''}}">
-            <a href="{{route('user.produk.list')}}"><span>Produk</span></a>
+            <a href="{{route('admin.produk.list')}}"><span>Produk</span></a>
           </li>
         </ul>
       </li>   
@@ -59,44 +48,49 @@
       <li class="hasSubmenu">
         <a href="#sertifikasi"><i class="fa fa-folder"></i><span>Sertifikasi</span></a>
         <ul id="sertifikasi" class="{{ Request::is([
-            'user/sertifikasi', 'user/sertifikasi/*'
+            'admin/sertifikasi', 'admin/sertifikasi/*'
 
           ]) ? 'in':''}}">
           <li class="{{ Request::is([
-              'user/sertifikasi/kategori-sertifikasi', 'user/sertifikasi/kategori-sertifikasi/*'
+              'admin/sertifikasi/kategori-sertifikasi', 'admin/sertifikasi/kategori-sertifikasi/*'
             
             ]) ? 'active':''}}">
-            <a href="{{route('user.sertifikasi.kategori-sertifikasi')}}"><span>Kategori Sertifikasi</span></a>
+            <a href="{{route('admin.sertifikasi.kategori-sertifikasi')}}"><span>Kategori Sertifikasi</span></a>
           </li>
           <li class="{{ Request::is([
-              'user/sertifikasi/list', 'user/sertifikasi/list/*'
+              'admin/sertifikasi/list', 'admin/sertifikasi/list/*'
             
             ]) ? 'active':''}}">
-            <a href="{{route('user.sertifikasi.list')}}"><span>Sertifikasi</span></a>
+            <a href="{{route('admin.sertifikasi.list')}}"><span>Sertifikasi</span></a>
           </li>
         </ul>
       </li>  
 
       <li class="{{ Request::is([
-              'user/event/', 'user/event/*'  
+              'admin/event/', 'admin/event/*'  
             ]) ? 'active':''}}">
-          <a href="{{route('user.event.index')}}"><i class="fa fa-calendar"></i><span>Event</span></a>
+          <a href="{{route('admin.event.index')}}"><i class="fa fa-calendar"></i><span>Event</span></a>
+      </li> 
+      <li class="{{ Request::is([
+              'admin/kehadiran-event/', 'admin/kehadiran-event/*'  
+            ]) ? 'active':''}}">
+          <a href="{{route('kehadiran-event.index')}}"><i class="fa fa-calendar"></i><span>Kehadiran Event</span></a>
       </li> 
 
       <li class="hasSubmenu">
         <a href="#pengguna"><i class="fa fa-users"></i><span>Pengguna</span></a>
         <ul id="pengguna" class="{{ Request::is([
-            'user/pengguna/kategori-pengguna', 'user/pengguna/kategori-pengguna/*'
+            'admin/pengguna/kategori-pengguna', 'admin/pengguna/kategori-pengguna/*'
           ]) ? 'in':''}}">
           <li class="{{ Request::is([
-            'user/pengguna/kategori-pengguna', 'user/pengguna/kategori-pengguna/*'
+            'admin/pengguna/kategori-pengguna', 'admin/pengguna/kategori-pengguna/*'
             ]) ? 'active':''}}">
-            <a href="{{route('user.pengguna.kategori-pengguna')}}"><span>Kategori Pengguna</span></a>
+            <a href="{{route('admin.pengguna.kategori-pengguna')}}"><span>Kategori Pengguna</span></a>
           </li>
           <li class="{{ Request::is([
-            'user/pengguna/list', 'user/pengguna/list/*'
+            'admin/pengguna/list', 'admin/pengguna/list/*'
             ]) ? 'active':''}}">
-            <a href="{{route('user.pengguna.list')}}"><span>Pengguna</span></a>
+            <a href="{{route('admin.pengguna.list')}}"><span>Pengguna</span></a>
           </li>
         </ul>
       </li>         

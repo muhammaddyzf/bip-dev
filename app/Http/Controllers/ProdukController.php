@@ -31,7 +31,7 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        return view('user.produk.index');
+        return view('admin.produk.index');
     }
 
     public function getData()
@@ -39,7 +39,7 @@ class ProdukController extends Controller
         $produk = Produk::with('images')->get();
         $data = Datatables::of($produk)
                 ->addColumn('produk', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/produk/edit/').'" data-id="'.$row->PRDK_ID.'" onclick="actionButton(this)">'.$row->PRDK_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/produk/edit/').'" data-id="'.$row->PRDK_ID.'" onclick="actionButton(this)">'.$row->PRDK_NAMA.'</a>'; 
                 })
                 ->addColumn('image', function($row){
                     if($row->images['IMG_NAMA'] == ""){
@@ -51,9 +51,9 @@ class ProdukController extends Controller
                 })
                 ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('user/produk/hapus/'.$row->PRDK_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete" disabled><i class="fa fa-trash"></i>
+                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('admin/produk/hapus/'.$row->PRDK_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete" disabled><i class="fa fa-trash"></i>
                                 </a>
-                                <a href="'.url('user/produk/generate-qr/'.$row->PRDK_ID).'" target="blank" type="button" class="btn btn-default btn-sm" title="Generate QR Code"><i class="fa fa-qrcode"></i>
+                                <a href="'.url('admin/produk/generate-qr/'.$row->PRDK_ID).'" target="blank" type="button" class="btn btn-default btn-sm" title="Generate QR Code"><i class="fa fa-qrcode"></i>
                                 </a>
                             </div>
                             ';
@@ -75,7 +75,7 @@ class ProdukController extends Controller
         $ikm            = Ikm::all();
         $kategoriProduk = KategoriProduk::all();
 
-        return view('user.produk.add', compact('kategoriProduk', 'ikm'));
+        return view('admin.produk.add', compact('kategoriProduk', 'ikm'));
     }
 
     /**
@@ -169,7 +169,7 @@ class ProdukController extends Controller
 
         $images->save();
 
-        return redirect('user/produk/list')->with('message','Transaction Success');
+        return redirect('admin/produk/list')->with('message','Transaction Success');
     }
 
     /**
@@ -197,7 +197,7 @@ class ProdukController extends Controller
         $ikm            = Ikm::all();
         $kategoriProduk = KategoriProduk::all();
 
-        return view('user.produk.edit', compact('kategoriProduk', 'ikm', 'produk', 'ptkproduk', 'image'));
+        return view('admin.produk.edit', compact('kategoriProduk', 'ikm', 'produk', 'ptkproduk', 'image'));
     }
 
     /**
@@ -302,7 +302,7 @@ class ProdukController extends Controller
         ]);   
         
 
-        return redirect('user/produk/list')->with('message','Transaction Success');
+        return redirect('admin/produk/list')->with('message','Transaction Success');
     }
 
     /**

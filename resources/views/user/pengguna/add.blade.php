@@ -13,7 +13,7 @@ navbar
 	<div class="col-md-8 col-lg-12">
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				<form action="{{url('user/pengguna/simpan')}}" method="post" id="form-pengguna" enctype="multipart/form-data">
+				<form action="{{url('admin/pengguna/simpan')}}" method="post" id="form-pengguna" enctype="multipart/form-data">
 					@csrf
 					<div class="row">
 						<div class="col-md-12">

@@ -197,6 +197,18 @@ public $successStatus = 200;
     {
         $user = User::find($id);
 
+        if(isset($user->pengguna->PNG_NIK)){
+            $nik = $user->pengguna->PNG_NIK;
+        }else{
+            $nik = "";
+        }
+
+        if(isset($user->pengguna->PNG_ALMNT)){
+            $almt = $user->pengguna->PNG_ALMNT;
+        }else{
+            $almt = "";
+        }
+
         if($user->images['IMG_NAMA'] == ""){
             $images = Images::imageDefault();
         }else{
@@ -210,13 +222,13 @@ public $successStatus = 200;
             'password'      => $user->password,
             'session'       => '',
             'email'         => $user->email,
-            'nik'           => $user->pengguna->PNG_INK,
+            'nik'           => $nik,
             'nama'          => $user->name,
             'pendidikan'    => $user->pengguna->PNG_PEND,
             'telpon'        => $user->pengguna->PNG_TLP,
-            'alamat'        => $user->pengguna->ALMNT,
+            'alamat'        => $almt,
             'username'      => $user->username,
-            'hak_akses'     => $user->pengguna->KTPNG_ID,
+            'hak_akses'     => $user->pengguna->kategoriPengguna->KTPNG_NAMA,
             'avatar'        => $images,
             'tanggal_masuk' => strtotime($user->created_at),
             'tanggal_daftar'=> strtotime($user->updated_at),

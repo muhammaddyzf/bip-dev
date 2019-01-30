@@ -16,155 +16,193 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
+// Auth::routes();
+// Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+// Route::get('test-update-user', function(){
+//     return view('edit-user');
+// });
+
 Auth::routes();
-Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-    Route::get('test-update-user', function(){
-        return view('edit-user');
-    });
 
-Route::group(['prefix' => 'user',  'middleware' => 'auth'], function()
-{
+Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], function() {   
+    Route::get('dashboard', 'DashboardController@index')->name('admin.dashboard');
+    Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
-	// Route::resource('users', 'UserController');
-    Route::get('dashboard', 'DashboardController@index')->name('user.dashboard');
+
+     //Route Pasar Tradisional
+    Route::get('pasar-tradisional', 'PasarTradisionalController@index')->name('admin.pasar-tradisional');
+    Route::get('data-pasar-tradisional', 'PasarTradisionalController@getData')->name('admin.data-pasar-tradisional');
+    Route::get('tambah/pasar-tradisional', 'PasarTradisionalController@create')->name('admin.tambah.pasar-tradisional');
+    Route::get('hapus/pasar-tradisional/{id}', 'PasarTradisionalController@destroy')->name('admin.hapus.pasar-tradisional');
+    Route::get('edit/pasar-tradisional/{id}', 'PasarTradisionalController@edit')->name('admin.edit.pasar-tradisional');
+    Route::post('simpan/pasar-tradisional', 'PasarTradisionalController@store')->name('admin.simpan.pasar-tradisional');
+    Route::post('update/pasar-tradisional/{id}', 'PasarTradisionalController@update')->name('admin.update.pasar-tradisional');
+    //Route Pasar Modern
+    Route::get('pasar-modern', 'PasarModernController@index')->name('admin.pasar-modern');
+    Route::get('data-pasar-modern', 'PasarModernController@getData')->name('admin.data-pasar-modern');
+    Route::get('tambah/pasar-modern', 'PasarModernController@create')->name('admin.tambah.pasar-modern');
+    Route::get('hapus/pasar-modern/{id}', 'PasarModernController@destroy')->name('admin.hapus.pasar-modern');
+    Route::get('edit/pasar-modern/{id}', 'PasarModernController@edit')->name('admin.edit.pasar-modern');
+    Route::post('simpan/pasar-modern', 'PasarModernController@store')->name('admin.simpan.pasar-modern');
+    Route::post('update/pasar-modern/{id}', 'PasarModernController@update')->name('admin.update.pasar-modern');
+    //Route Sentra
+    Route::get('sentra', 'SentraController@index')->name('admin.sentra');
+    Route::get('data-sentra', 'SentraController@getData')->name('admin.data-sentra');
+    Route::get('tambah/sentra', 'SentraController@create')->name('admin.tambah.sentra');
+    Route::get('hapus/sentra/{id}', 'SentraController@destroy')->name('admin.hapus.sentra');
+    Route::get('edit/sentra/{id}', 'SentraController@edit')->name('admin.edit.sentra');
+    Route::post('simpan/sentra', 'SentraController@store')->name('admin.simpan.sentra');
+    Route::post('update/sentra/{id}', 'SentraController@update')->name('admin.update.sentra');
 
     //Route IKM
-    Route::get('ikm', 'IkmController@index')->name('user.ikm');
-    Route::get('ikm/tambah', 'IkmController@create')->name('user.ikm.tambah');
-    Route::get('ikm/import', 'IkmController@import')->name('user.ikm.import');
-    Route::get('ikm/download-excel', 'IkmController@downloadExcel')->name('user.ikm.download-excel');
-
-    Route::post('ikm/simpan', 'IkmController@store')->name('user.ikm.simpan');
-    Route::get('ikm/data-ikm', 'IkmController@getData')->name('user.ikm.get-data');
-    Route::get('ikm/edit/{id}', 'IkmController@edit')->name('user.ikm.edit');
-    Route::post('ikm/update/{id}', 'IkmController@update')->name('user.ikm.update');
-    Route::get('ikm/produk/{id}', 'IkmController@produk')->name('user.ikm.produk');
-    Route::get('ikm/sertifikasi/{id}', 'IkmController@sertifikasi')->name('user.ikm.sertifikasi');
-    Route::get('ikm/event/{id}', 'IkmController@event')->name('user.ikm.event');
-    
-    //Route Pasar Tradisional
-    Route::get('pasar-tradisional', 'PasarTradisionalController@index')->name('user.pasar-tradisional');
-    Route::get('data-pasar-tradisional', 'PasarTradisionalController@getData')->name('user.data-pasar-tradisional');
-    Route::get('tambah/pasar-tradisional', 'PasarTradisionalController@create')->name('user.tambah.pasar-tradisional');
-    Route::get('hapus/pasar-tradisional/{id}', 'PasarTradisionalController@destroy')->name('user.hapus.pasar-tradisional');
-    Route::get('edit/pasar-tradisional/{id}', 'PasarTradisionalController@edit')->name('user.edit.pasar-tradisional');
-    Route::post('simpan/pasar-tradisional', 'PasarTradisionalController@store')->name('user.simpan.pasar-tradisional');
-    Route::post('update/pasar-tradisional/{id}', 'PasarTradisionalController@update')->name('user.update.pasar-tradisional');
-    //Route Pasar Modern
-    Route::get('pasar-modern', 'PasarModernController@index')->name('user.pasar-modern');
-    Route::get('data-pasar-modern', 'PasarModernController@getData')->name('user.data-pasar-modern');
-    Route::get('tambah/pasar-modern', 'PasarModernController@create')->name('user.tambah.pasar-modern');
-    Route::get('hapus/pasar-modern/{id}', 'PasarModernController@destroy')->name('user.hapus.pasar-modern');
-    Route::get('edit/pasar-modern/{id}', 'PasarModernController@edit')->name('user.edit.pasar-modern');
-    Route::post('simpan/pasar-modern', 'PasarModernController@store')->name('user.simpan.pasar-modern');
-    Route::post('update/pasar-modern/{id}', 'PasarModernController@update')->name('user.update.pasar-modern');
-    //Route Sentra
-    Route::get('sentra', 'SentraController@index')->name('user.sentra');
-    Route::get('data-sentra', 'SentraController@getData')->name('user.data-sentra');
-    Route::get('tambah/sentra', 'SentraController@create')->name('user.tambah.sentra');
-    Route::get('hapus/sentra/{id}', 'SentraController@destroy')->name('user.hapus.sentra');
-    Route::get('edit/sentra/{id}', 'SentraController@edit')->name('user.edit.sentra');
-    Route::post('simpan/sentra', 'SentraController@store')->name('user.simpan.sentra');
-    Route::post('update/sentra/{id}', 'SentraController@update')->name('user.update.sentra');
+    Route::get('ikm', 'IkmController@index')->name('admin.ikm');
+    Route::get('ikm/tambah', 'IkmController@create')->name('admin.ikm.tambah');
+    Route::post('ikm/import', 'IkmController@importExcel')->name('admin.ikm.import');
+    Route::get('ikm/upload', 'IkmController@uploadExcel')->name('admin.ikm.upload');
+    Route::get('ikm/download-excel', 'IkmController@downloadExcel')->name('admin.ikm.download-excel');
+    Route::get('ikm/cetak-laporan-excel/{type}', 'IkmController@cetakLaporan')->name('admin.ikm.cetak-laporan-excel');
+    Route::get('ikm/hapus/{id}', 'IkmController@destroy')->name('admin.ikm.hapus');
 
 
-    //Route Kategori Pengguna
-    Route::group(['prefix' => 'pengguna'],function(){      
-        Route::get('kategori-pengguna', 'KategoriPenggunaController@index')->name('user.pengguna.kategori-pengguna');
-        Route::get('data-kategori-pengguna', 'KategoriPenggunaController@getData')->name('user.pengguna.data-kategori-pengguna');
-        Route::get('kategori-pengguna/tambah', 'KategoriPenggunaController@create')->name('user.pengguna.kategori-pengguna.tambah');
-        Route::get('kategori-pengguna/hapus/{id}', 'KategoriPenggunaController@destroy')->name('user.pengguna.kategori-pengguna.hapus');
-        Route::get('kategori-pengguna/edit/{id}', 'KategoriPenggunaController@edit')->name('user.pengguna.kategori-pengguna.edit');
-        Route::post('kategori-pengguna/simpan', 'KategoriPenggunaController@store')->name('user.pengguna.kategori-pengguna.simpan');
-        Route::post('kategori-pengguna/update/{id}', 'KategoriPenggunaController@update')->name('user.pengguna.kategori-pengguna.update');
+    Route::post('ikm/simpan', 'IkmController@store')->name('admin.ikm.simpan');
+    Route::get('ikm/data-ikm', 'IkmController@getData')->name('admin.ikm.get-data');
+    Route::get('ikm/edit/{id}', 'IkmController@edit')->name('admin.ikm.edit');
+    Route::post('ikm/update/{id}', 'IkmController@update')->name('admin.ikm.update');
+    Route::get('ikm/produk/{id}', 'IkmController@produk')->name('admin.ikm.produk');
+    Route::get('ikm/sertifikasi/{id}', 'IkmController@sertifikasi')->name('admin.ikm.sertifikasi');
+    Route::get('ikm/event/{id}', 'IkmController@event')->name('admin.ikm.event');
 
-
-        Route::get('list', 'PenggunaController@index')->name('user.pengguna.list');
-        Route::get('data-pengguna', 'PenggunaController@getData')->name('user.pengguna.data-pengguna');
-        Route::get('tambah', 'PenggunaController@create')->name('user.pengguna.tambah');
-        Route::post('simpan', 'PenggunaController@store')->name('user.pengguna.simpan');
-        Route::get('edit/{id}', 'PenggunaController@edit')->name('user.pengguna.edit');
-        Route::get('hapus/{id}', 'PenggunaController@destroy')->name('user.pengguna.hapus');
-        Route::post('update/{id}', 'PenggunaController@update')->name('user.pengguna.update');
-    });
-
-    //Route Kategori Produk
-    Route::group(['prefix' => 'produk'],function(){    
-        Route::get('kategori-produk', 'KategoriProdukController@index')->name('user.produk.kategori-produk');
-        Route::get('data-kategori-produk', 'KategoriProdukController@getData')->name('user.produk.data-kategori-produk');
-        Route::get('kategori-produk/tambah', 'KategoriProdukController@create')->name('user.produk.kategori-produk.tambah');
-        Route::get('kategori-produk/hapus/{id}', 'KategoriProdukController@destroy')->name('user.produk.kategori-produk.hapus');
-        Route::get('kategori-produk/edit/{id}', 'KategoriProdukController@edit')->name('user.produk.kategori-produk.edit');
-        Route::post('kategori-produk/simpan', 'KategoriProdukController@store')->name('user.kategori-produk.simpan');
-        Route::post('kategori-produk/update/{id}', 'KategoriProdukController@update')->name('user.kategori-produk.update');
-
-
-        Route::get('tambah', 'ProdukController@create')->name('user.produk.tambah');
-        Route::post('simpan', 'ProdukController@store')->name('user.produk.simpan');
-        Route::get('list', 'ProdukController@index')->name('user.produk.list');
-        Route::get('data-produk', 'ProdukController@getData')->name('user.produk.data-produk');
-        Route::get('edit/{id}', 'ProdukController@edit')->name('user.produk.edit');
-        Route::post('update/{id}', 'ProdukController@update')->name('user.produk.update');
-        Route::get('hapus/{id}', 'ProdukController@destroy')->name('user.produk.hapus');
-
-
-        Route::get('generate-qr/{id}', 'ProdukController@generateQr')->name('user.produk.generate-qr');  
-    });
-
-    //Route Kategori Sertifikasi
-    Route::group(['prefix' => 'sertifikasi'],function(){
-        Route::get('kategori-sertifikasi', 'KategoriSertifikasiController@index')->name('user.sertifikasi.kategori-sertifikasi');
-        Route::get('kategori-sertifikasi/tambah', 'KategoriSertifikasiController@create')->name('user.sertifikasi.kategori-sertifikasi.tambah');
-        Route::get('data-kategori-sertifikasi', 'KategoriSertifikasiController@getData')->name('user.data-kategori-sertifikasi');
-        Route::get('kategori-sertifikasi/hapus/{id}', 'KategoriSertifikasiController@destroy')->name('user.sertifikasi.kategori-sertifikasi.hapus');
-        Route::get('kategori-sertifikasi/edit/{id}', 'KategoriSertifikasiController@edit')->name('user.sertifikasi.kategori-sertifikasi.edit');
-        Route::post('kategori-sertifikasi/simpan', 'KategoriSertifikasiController@store')->name('user.sertifikasi.kategori-sertifikasi.simpan');
-        Route::post('kategori-sertifikasi/update/{id}', 'KategoriSertifikasiController@update')->name('user.sertifikasi.kategori-sertifikasi.update');
-
-        Route::get('list', 'SertifikasiController@index')->name('user.sertifikasi.list');
-        Route::get('tambah', 'SertifikasiController@create')->name('user.sertifikasi.tambah');
-        Route::post('simpan', 'SertifikasiController@store')->name('user.sertifikasi.simpan');
-        Route::get('data-sertifikasi', 'SertifikasiController@getData')->name('user.sertifikasi.data-sertifikasi');
-        Route::get('hapus/{id}', 'SertifikasiController@destroy')->name('user.sertifikasi.hapus');
-
-
-        //ikm to sertifikasi
-        Route::get('tambah-ikm/{id}', 'SertifikasiController@createIkmToSertifikasi')->name('user.sertifikasi.tambah-ikm');
-        Route::post('simpan-ikm', 'SertifikasiController@storeIkmToSertifikasi')->name('user.sertifikasi.simpan-ikm');
-        
-    });
-
-    //Route Event
-    Route::group(['prefix' => 'event'], function(){
-        Route::get('tambah/{id}', 'EventController@create')->name('user.event.tambah');  
-        Route::get('data-event', 'EventController@getData')->name('user.event.data-event');  
-        Route::post('simpan', 'EventController@store')->name('user.event.simpan');    
-
-        Route::get('generate-qr/{id}', 'EventController@generateQr')->name('user.event.generate-qr'); 
-
-        Route::get('index', 'EventController@index')->name('user.event.index'); 
-        Route::get('tambah-event', 'EventController@createEvent')->name('user.event.tambah-event');  
-        Route::get('edit/{id}', 'EventController@edit')->name('user.event.edit');
-        Route::post('update/{id}', 'EventController@update')->name('user.event.update');
-
-        Route::get('tambah-ikm/{id}', 'EventController@createIkm')->name('user.event.tambah-ikm');
-        Route::get('data-ikmToEvent/{id}', 'EventController@getDataIkmToEvent')->name('user.event.data-ikmToEvent');
-    });
-
-    // Route Ikm To Event
-    Route::group(['prefix' => 'ikm-to-event'], function(){
-        Route::get('tambah/{id}', 'IkmToEventController@create')->name('user.ikm-to-event.tambah');
-        Route::post('kirim-undangan', 'IkmToEventController@kirimUndangan')->name('user.ikm-to-event.kirim-undangan');
-    });
 
     //Route Wilayah
     Route::get('provinsi/{provinsi}/kabkot', 'ProvinsiController@getKabkot');
     Route::get('kabkot/{kabkot}/kecamatan', 'KabkotController@getKecamatan');
     Route::get('kecamatan/{kecamatan}/desa', 'KecamatanController@getdesa');
 
-    // Route::get('pasar-modern', 'PasarModernController@index')->name('user.pasar-modern');
-    // Route::get('sentra', 'PasarTradisionalController@index')->name('user.sentra'); 
+    //Route Kategori Pengguna
+    Route::group(['prefix' => 'pengguna'],function(){      
+        Route::get('kategori-pengguna', 'KategoriPenggunaController@index')->name('admin.pengguna.kategori-pengguna');
+        Route::get('data-kategori-pengguna', 'KategoriPenggunaController@getData')->name('admin.pengguna.data-kategori-pengguna');
+        Route::get('kategori-pengguna/tambah', 'KategoriPenggunaController@create')->name('admin.pengguna.kategori-pengguna.tambah');
+        Route::get('kategori-pengguna/hapus/{id}', 'KategoriPenggunaController@destroy')->name('admin.pengguna.kategori-pengguna.hapus');
+        Route::get('kategori-pengguna/edit/{id}', 'KategoriPenggunaController@edit')->name('admin.pengguna.kategori-pengguna.edit');
+        Route::post('kategori-pengguna/simpan', 'KategoriPenggunaController@store')->name('admin.pengguna.kategori-pengguna.simpan');
+        Route::post('kategori-pengguna/update/{id}', 'KategoriPenggunaController@update')->name('admin.pengguna.kategori-pengguna.update');
+
+
+        Route::get('list', 'PenggunaController@index')->name('admin.pengguna.list');
+        Route::get('data-pengguna', 'PenggunaController@getData')->name('admin.pengguna.data-pengguna');
+        Route::get('tambah', 'PenggunaController@create')->name('admin.pengguna.tambah');
+        Route::post('simpan', 'PenggunaController@store')->name('admin.pengguna.simpan');
+        Route::get('edit/{id}', 'PenggunaController@edit')->name('admin.pengguna.edit');
+        Route::get('hapus/{id}', 'PenggunaController@destroy')->name('admin.pengguna.hapus');
+        Route::post('update/{id}', 'PenggunaController@update')->name('admin.pengguna.update');
+    });
+
+    //Route Kategori Produk
+    Route::group(['prefix' => 'produk'],function(){    
+        Route::get('kategori-produk', 'KategoriProdukController@index')->name('admin.produk.kategori-produk');
+        Route::get('data-kategori-produk', 'KategoriProdukController@getData')->name('admin.produk.data-kategori-produk');
+        Route::get('kategori-produk/tambah', 'KategoriProdukController@create')->name('admin.produk.kategori-produk.tambah');
+        Route::get('kategori-produk/hapus/{id}', 'KategoriProdukController@destroy')->name('admin.produk.kategori-produk.hapus');
+        Route::get('kategori-produk/edit/{id}', 'KategoriProdukController@edit')->name('admin.produk.kategori-produk.edit');
+        Route::post('kategori-produk/simpan', 'KategoriProdukController@store')->name('admin.kategori-produk.simpan');
+        Route::post('kategori-produk/update/{id}', 'KategoriProdukController@update')->name('admin.kategori-produk.update');
+
+
+        Route::get('tambah', 'ProdukController@create')->name('admin.produk.tambah');
+        Route::post('simpan', 'ProdukController@store')->name('admin.produk.simpan');
+        Route::get('list', 'ProdukController@index')->name('admin.produk.list');
+        Route::get('data-produk', 'ProdukController@getData')->name('admin.produk.data-produk');
+        Route::get('edit/{id}', 'ProdukController@edit')->name('admin.produk.edit');
+        Route::post('update/{id}', 'ProdukController@update')->name('admin.produk.update');
+        Route::get('hapus/{id}', 'ProdukController@destroy')->name('admin.produk.hapus');
+
+
+        Route::get('generate-qr/{id}', 'ProdukController@generateQr')->name('admin.produk.generate-qr');  
+    });
+
+    //Route Kategori Sertifikasi
+    Route::group(['prefix' => 'sertifikasi'],function(){
+        Route::get('kategori-sertifikasi', 'KategoriSertifikasiController@index')->name('admin.sertifikasi.kategori-sertifikasi');
+        Route::get('kategori-sertifikasi/tambah', 'KategoriSertifikasiController@create')->name('admin.sertifikasi.kategori-sertifikasi.tambah');
+        Route::get('data-kategori-sertifikasi', 'KategoriSertifikasiController@getData')->name('admin.data-kategori-sertifikasi');
+        Route::get('kategori-sertifikasi/hapus/{id}', 'KategoriSertifikasiController@destroy')->name('admin.sertifikasi.kategori-sertifikasi.hapus');
+        Route::get('kategori-sertifikasi/edit/{id}', 'KategoriSertifikasiController@edit')->name('admin.sertifikasi.kategori-sertifikasi.edit');
+        Route::post('kategori-sertifikasi/simpan', 'KategoriSertifikasiController@store')->name('admin.sertifikasi.kategori-sertifikasi.simpan');
+        Route::post('kategori-sertifikasi/update/{id}', 'KategoriSertifikasiController@update')->name('admin.sertifikasi.kategori-sertifikasi.update');
+
+        Route::get('list', 'SertifikasiController@index')->name('admin.sertifikasi.list');
+        Route::get('tambah', 'SertifikasiController@create')->name('admin.sertifikasi.tambah');
+        Route::post('simpan', 'SertifikasiController@store')->name('admin.sertifikasi.simpan');
+        Route::get('data-sertifikasi', 'SertifikasiController@getData')->name('admin.sertifikasi.data-sertifikasi');
+        Route::get('hapus/{id}', 'SertifikasiController@destroy')->name('admin.sertifikasi.hapus');
+        Route::get('edit/{id}', 'SertifikasiController@edit')->name('admin.sertifikasi.edit');
+        Route::post('update/{id}', 'SertifikasiController@update')->name('admin.sertifikasi.update');
+
+
+        //ikm to sertifikasi
+        Route::get('tambah-ikm/{id}', 'SertifikasiController@createIkmToSertifikasi')->name('admin.sertifikasi.tambah-ikm');
+        Route::post('simpan-ikm', 'SertifikasiController@storeIkmToSertifikasi')->name('admin.sertifikasi.simpan-ikm');
+        
+    });
+
+    //Route Event
+    Route::group(['prefix' => 'event'], function(){
+        Route::get('tambah/{id}', 'EventController@create')->name('admin.event.tambah');  
+        Route::get('data-event', 'EventController@getData')->name('admin.event.data-event');  
+        Route::post('simpan', 'EventController@store')->name('admin.event.simpan');    
+
+        Route::get('generate-qr/{id}', 'EventController@generateQr')->name('admin.event.generate-qr'); 
+
+        Route::get('index', 'EventController@index')->name('admin.event.index'); 
+        Route::get('tambah-event', 'EventController@createEvent')->name('admin.event.tambah-event');  
+        Route::get('edit/{id}', 'EventController@edit')->name('admin.event.edit');
+        Route::post('update/{id}', 'EventController@update')->name('admin.event.update');
+
+        Route::get('tambah-ikm/{id}', 'EventController@createIkm')->name('admin.event.tambah-ikm');
+        Route::get('data-ikmToEvent/{id}', 'EventController@getDataIkmToEvent')->name('admin.event.data-ikmToEvent');
+    });
+
+    // Route Ikm To Event
+    Route::group(['prefix' => 'ikm-to-event'], function(){
+        Route::get('tambah/{id}', 'IkmToEventController@create')->name('admin.ikm-to-event.tambah');
+        Route::post('kirim-undangan', 'IkmToEventController@kirimUndangan')->name('admin.ikm-to-event.kirim-undangan');
+    });
+
+
+    // Route::get('pasar-modern', 'PasarModernController@index')->name('admin.pasar-modern');
+    // Route::get('sentra', 'PasarTradisionalController@index')->name('admin.sentra'); 
+
+
+    // Kehadiran Event
+    Route::group(['prefix' => 'kehadiran-event'], function(){
+        Route::get('index', 'KehadiranEventController@index')->name('kehadiran-event.index'); 
+        Route::get('get-data', 'KehadiranEventController@getData')->name('kehadiran-event.get-data'); 
+        Route::get('show/{id}', 'KehadiranEventController@show')->name('kehadiran-event.show'); 
+        Route::get('edit/{idEvent}/{idIkm}', 'KehadiranEventController@edit')->name('kehadiran-event.edit'); 
+        Route::post('update/{idEvent}/{idIkm}', 'KehadiranEventController@update')->name('kehadiran-event.update'); 
+    });
+
+
+    // Importir
+    Route::get('importir/index', 'ImportirController@index')->name('importir.index');
+    Route::get('importir/add', 'ImportirController@create')->name('importir.add');
+    Route::post('importir/store', 'ImportirController@store')->name('importir.store');    
+    Route::get('importir/edit/{id}', 'ImportirController@edit')->name('importir.edit');
+    Route::post('importir/update/{id}', 'ImportirController@update')->name('importir.update');
+    Route::get('importir/delete/{id}', 'ImportirController@destroy')->name('importir.destroy');
+    Route::get('data-importir', 'ImportirController@getData')->name('data-importir'); 
+
+    // Eksportir
+    Route::get('eksportir/index', 'EksportirController@index')->name('eksportir.index');
+    Route::get('eksportir/add', 'EksportirController@create')->name('eksportir.add');
+    Route::post('eksportir/store', 'EksportirController@store')->name('eksportir.store');    
+    Route::get('eksportir/edit/{id}', 'EksportirController@edit')->name('eksportir.edit');
+    Route::post('eksportir/update/{id}', 'EksportirController@update')->name('eksportir.update');
+    Route::get('eksportir/delete/{id}', 'EksportirController@destroy')->name('eksportir.destroy');
+    Route::get('data-eksportir', 'EksportirController@getData')->name('data-eksportir'); 
 });
+
 
 Route::get('qr-code', function () {
     return QrCode::size(500)->generate('Welcome to kerneldev.com!');

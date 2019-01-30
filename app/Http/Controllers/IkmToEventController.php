@@ -32,7 +32,7 @@ class IkmToEventController extends Controller
 			'ikm'   => $ikm,
 			'event' => $event
 		);
-		return view('user.ikm-to-event.add')->with($data);
+		return view('admin.ikm-to-event.add')->with($data);
 	}
 
 	public function kirimUndangan(Request $request)
@@ -65,7 +65,7 @@ class IkmToEventController extends Controller
 		        $data->ITE_USERUPDT= $idUser;
 			    $data->save();
 
-			    Notifications::mailInvitation($idUser, $idIkm, $idEvent);
+			    //Notifications::mailInvitation($idUser, $idIkm, $idEvent);
 	        }
 	    }else{
 	    	IkmToEvent::where('IKM_ID', $idIkm)

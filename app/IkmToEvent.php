@@ -49,7 +49,6 @@ class IkmToEvent extends Model
 					)
 					->where('ITE.IKM_ID', $idIkm)
 					->where('E.EVT_NAMA' , 'like', '%'.$keyword.'%')
-					->orwhere('E.EVT_TEMA' , 'like', '%'.$keyword.'%')
 					->paginate(30);
 
 		return $agendaIkm;
@@ -120,5 +119,66 @@ class IkmToEvent extends Model
 			->first();
 			
 		return $agendaIkm;
+	}
+
+	public static function kehadiranEventIkm($id)
+	{
+		$data = DB::table('tb_ikm_to_event AS ITE')
+					->leftjoin('tb_ikm AS IKM', 'IKM.IKM_ID', '=', 'ITE.IKM_ID')
+					->leftjoin('tb_provinsi AS PRV', 'PRV.id', '=', 'IKM.IKM_PROV')
+					->leftjoin('tb_kabkot AS KABKOT', 'KABKOT.id', '=', 'IKM.IKM_KABKOT')
+					->leftjoin('tb_kecamatan AS KEC', 'KEC.id', '=', 'IKM.IKM_KEC')
+					->leftjoin('tb_desa AS DES', 'DES.id', '=', 'IKM.IKM_DESA')
+					->select(
+						DB::raw("
+								ITE.EVT_ID
+								, IKM.IKM_NAMA
+								, IKM.IKM_ID
+								, IKM.IKM_PEMILIK
+								, PRV.name AS provinsi
+								, KABKOT.name AS kabkot
+								, KEC.name AS kecamatan
+								, DES.name AS desa
+								, IF(ITE.ITE_HADIR = 0, 'Belum Hadir', IF(ITE.ITE_HADIR = 1, 'Hadir', IF(ITE.ITE_HADIR = 2, 'Tidak Hadir', ''))) AS kehadiran
+                            	, IF(ITE.ITE_HADIR = 0, 'label-warning', IF(ITE.ITE_HADIR = 1, 'label-success', IF(ITE.ITE_HADIR = 2, 'label-danger', ''))) AS label_kehadiran
+				
+							")
+					)
+					->where('ITE.EVT_ID', $id)
+					->get();
+
+		return $data;
+	}
+
+	public static function getKehadiranEventIkm($idEvent, $idIkm)
+	{
+		$data = DB::table('tb_ikm_to_event AS ITE')
+					->leftjoin('tb_ikm AS IKM', 'IKM.IKM_ID', '=', 'ITE.IKM_ID')
+					->leftjoin('tb_provinsi AS PRV', 'PRV.id', '=', 'IKM.IKM_PROV')
+					->leftjoin('tb_kabkot AS KABKOT', 'KABKOT.id', '=', 'IKM.IKM_KABKOT')
+					->leftjoin('tb_kecamatan AS KEC', 'KEC.id', '=', 'IKM.IKM_KEC')
+					->leftjoin('tb_desa AS DES', 'DES.id', '=', 'IKM.IKM_DESA')
+					->select(
+						DB::raw("
+								ITE.EVT_ID
+								, IKM.IKM_NAMA
+								, ITE.ITE_NILAI
+								, ITE.ITE_HADIR
+								, IKM.IKM_ID
+								, IKM.IKM_PEMILIK
+								, PRV.name AS provinsi
+								, KABKOT.name AS kabkot
+								, KEC.name AS kecamatan
+								, DES.name AS desa
+								, IF(ITE.ITE_HADIR = 0, 'Belum Datang', IF(ITE.ITE_HADIR = 1, 'Hadir', IF(ITE.ITE_HADIR = 2, 'Tidak Hadir', ''))) AS kehadiran
+                            	, IF(ITE.ITE_HADIR = 0, 'label-warning', IF(ITE.ITE_HADIR = 1, 'label-success', IF(ITE.ITE_HADIR = 2, 'label-danger', ''))) AS label_kehadiran
+				
+							")
+					)
+					->where('ITE.EVT_ID', $idEvent)
+					->where('ITE.IKM_ID', $idIkm)
+					->first();
+
+		return $data;
 	}
 }

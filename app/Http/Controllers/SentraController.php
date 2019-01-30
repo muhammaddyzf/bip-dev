@@ -20,7 +20,7 @@ class SentraController extends Controller
      */
     public function index()
     {
-        return view('user.sentra.index');
+        return view('admin.sentra.index');
     }
 
     public function getData()
@@ -41,11 +41,11 @@ class SentraController extends Controller
                      return $row->kabkot->name ;
                  })
                 ->addColumn('nama_sentra', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/edit/sentra/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_sentra.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/edit/sentra/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->nama_sentra.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/hapus/sentra/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" onclick="confirmLink(this)" data-href="'.url('admin/hapus/sentra/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -70,7 +70,7 @@ class SentraController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
         );
-        return view('user.sentra.add')->with($data);
+        return view('admin.sentra.add')->with($data);
     }
 
     /**
@@ -110,7 +110,7 @@ class SentraController extends Controller
         $data->kapasitas_produksi= $request->kapasitasProduksi;
 
         $data->save();
-        return redirect('user/sentra')->with('message','Transaction Success');
+        return redirect('admin/sentra')->with('message','Transaction Success');
         
     }
 
@@ -140,7 +140,7 @@ class SentraController extends Controller
             'kecamatan'    => Kecamatan::all(),
             'desa'         => Desa::all()
         );
-        return view('user.sentra.edit')->with($data);
+        return view('admin.sentra.edit')->with($data);
     }
 
     /**
@@ -181,7 +181,7 @@ class SentraController extends Controller
         $data->kapasitas_produksi= $request->kapasitasProduksi;
 
         $data->save();
-        return redirect('user/sentra')->with('message','Transaction Success');
+        return redirect('admin/sentra')->with('message','Transaction Success');
     }
 
     /**
@@ -194,6 +194,6 @@ class SentraController extends Controller
     {
         $data = Sentra::find($id);
         $data->delete();
-        return redirect('user/sentra')->with('message','Transaction Success');
+        return redirect('admin/sentra')->with('message','Transaction Success');
     }
 }

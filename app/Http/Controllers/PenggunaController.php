@@ -29,7 +29,7 @@ class PenggunaController extends Controller
 
     public function index()
     {
-        return view('user.pengguna.index');
+        return view('admin.pengguna.index');
     }
 
     public function getData()
@@ -38,11 +38,11 @@ class PenggunaController extends Controller
 
         $data = Datatables::of($pengguna)
         ->addColumn('name', function($row){
-             return $html = '<a href="#" data-href="'.url('user/pengguna/edit/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->name.'</a>'; 
+             return $html = '<a href="#" data-href="'.url('admin/pengguna/edit/').'" data-id="'.$row->id.'" onclick="actionButton(this)">'.$row->name.'</a>'; 
           })
           ->addColumn('action', function($row){
               $html = '<div class="text-center">
-                        <a href="#" onclick="confirmLink(this)" data-href="'.url('user/pengguna/hapus/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                        <a disabled href="#" onclick="confirmLink(this)" data-href="'.url('admin/pengguna/hapus/'.$row->id).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                         </a>
                     </div>
                     ';
@@ -62,7 +62,7 @@ class PenggunaController extends Controller
     public function create()
     {
         $kategoriPengguna = KategoriPengguna::all();
-        return view('user.pengguna.add', compact('kategoriPengguna'));
+        return view('admin.pengguna.add', compact('kategoriPengguna'));
     }
 
     /**
@@ -141,7 +141,7 @@ class PenggunaController extends Controller
 
         $images->save();
 
-        return redirect('user/pengguna/list')->with('message','Transaction Success');
+        return redirect('admin/pengguna/list')->with('message','Transaction Success');
     }
 
     /**
@@ -166,7 +166,7 @@ class PenggunaController extends Controller
         $user = User::with('pengguna', 'images', 'pengguna.kategoriPengguna')->where('id', $id)->first();
         $kategoriPengguna = KategoriPengguna::all();
 
-        return view('user.pengguna.edit', compact('user', 'kategoriPengguna'));
+        return view('admin.pengguna.edit', compact('user', 'kategoriPengguna'));
     }
 
     /**
@@ -228,22 +228,44 @@ class PenggunaController extends Controller
             $imageName = time().'.'.$request->userImage->getClientOriginalExtension();
             $foto      = 'images/user/'.$imageName;
 
-            if($getImages->IMG_NAMA == ""){
-                $request->userImage->move(public_path('/images/user/'), $imageName);
-            }else{
-                File::delete(public_path($getImages->IMG_NAMA));
-                $request->userImage->move(public_path('/images/user/'), $imageName);
-            }
+            if(isset($getImages)){
 
-            $images = Images::where('ID', $id)
+              if($getImages->IMG_NAMA == ""){
+                  $request->userImage->move(public_path('/images/user/'), $imageName);
+              }else{
+                  File::delete(public_path($getImages->IMG_NAMA));
+                  $request->userImage->move(public_path('/images/user/'), $imageName);
+              }
+
+
+              $images = Images::where('ID', $id)
                       ->update([
                             'IMG_NAMA'      => $foto,
                             'IMG_DTUPDT'    => $this->dateUpdate,
                             'IMG_USERUPDT'  => $id,
                       ]);
+            }else{
+                $request->userImage->move(public_path('/images/user/'), $imageName);
+
+
+                $rand = rand(1000, 9000);
+                $images = new Images;   
+                $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                $images->ID            = $id; 
+                $images->IMG_GROUP     = 'User'; 
+                $images->IMG_NAMA      = $foto; 
+                $images->IMG_KET       = $originalName; 
+                $images->IMG_DTINS     = $this->dateInsert;
+                $images->IMG_DTUPDT    = $this->dateUpdate;
+                $images->IMG_USERINS   = $id;
+                $images->IMG_USERUPDT  = $id;
+
+                $images->save();
+            }
+
         }
 
-        return redirect('user/pengguna/list')->with('message','Transaction Success');
+        return redirect('admin/pengguna/list')->with('message','Transaction Success');
     }
 
     /**
@@ -258,6 +280,6 @@ class PenggunaController extends Controller
         $pengguna = Pengguna::where('USER_ID', $id)->delete();
         $user = User::where('id', $id)->delete();
 
-        return redirect('user/pengguna/list')->with('message','Transaction Success');
+        return redirect('admin/pengguna/list')->with('message','Transaction Success');
     }
 }

@@ -10,8 +10,16 @@ use App\Pengguna;
 use App\Produk;
 use App\User;
 
+use File;
+
 class IkmController extends Controller
 {
+	public function __construct(Request $request)
+    {
+        $this->dateInsert   = date('Y-m-d H:i:s');
+        $this->dateUpdate   = date('Y-m-d H:i:s');
+    }
+
 	public function index()
 	{
 		$data = Ikm::with('images', 'provinsi', 'kabkot', 'kecamatan', 'desa')->paginate(30);
@@ -262,7 +270,7 @@ class IkmController extends Controller
         }
 
         //update user
-        $user->id       = $id;
+        //$user->id       = $id;
         // $user->username = $request->input('username');
         $user->password = $password;
         $user->name     = $request->input('fullname');
@@ -286,24 +294,43 @@ class IkmController extends Controller
         if($request->hasFile('lampiran')){
             $getImages       = Images::where('ID', $id)->first();
             $originalName    = $request->file('lampiran')->getClientOriginalName();
-            $sizeFile        = getimagesize($originalName);
+            //$sizeFile        = getimagesize($originalName);
 
             $imageName = time().'.'.$request->lampiran->getClientOriginalExtension();
             $foto      = 'images/user/'.$imageName;
 
-            if($getImages->IMG_NAMA == ""){
-                $request->lampiran->move(public_path('/images/user/'), $imageName);
-            }else{
-                File::delete(public_path($getImages->IMG_NAMA));
-                $request->lampiran->move(public_path('/images/user/'), $imageName);
-            }
 
-            $images = Images::where('ID', $id)
-                      ->update([
-                            'IMG_NAMA'      => $foto,
-                            'IMG_DTUPDT'    => $this->dateUpdate,
-                            'IMG_USERUPDT'  => $id,
-                      ]);
+            if(isset($getImages)){
+	            if($getImages->IMG_NAMA == ""){
+	                $request->lampiran->move(public_path('/images/user/'), $imageName);
+	            }else{
+	                File::delete(public_path($getImages->IMG_NAMA));
+	                $request->lampiran->move(public_path('/images/user/'), $imageName);
+	            }
+
+	            $images = Images::where('ID', $id)
+	                      ->update([
+	                            'IMG_NAMA'      => $foto,
+	                            'IMG_DTUPDT'    => $this->dateUpdate,
+	                            'IMG_USERUPDT'  => $id,
+	                      ]);
+	        }else{
+                $request->lampiran->move(public_path('/images/user/'), $imageName);
+                
+                $rand = rand(1000, 9000);
+                $images = new Images;   
+                $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                $images->ID            = $id; 
+                $images->IMG_GROUP     = 'User'; 
+                $images->IMG_NAMA      = $foto; 
+                $images->IMG_KET       = $originalName; 
+                $images->IMG_DTINS     = $this->dateInsert;
+                $images->IMG_DTUPDT    = $this->dateUpdate;
+                $images->IMG_USERINS   = $id;
+                $images->IMG_USERUPDT  = $id;
+
+                $images->save();
+            }
         }
 
         if($user->images['IMG_NAMA'] == ""){

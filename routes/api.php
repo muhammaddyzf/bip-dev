@@ -21,6 +21,8 @@ Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
     Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
         Route::post('login', 'Api\UserController@login');
         Route::post('register', 'Api\UserController@register');
+        Route::get('show/{id}', 'Api\UserController@show');
+        Route::post('update', 'Api\IkmController@updateUser');
     });
 
     Route::group(['prefix' => '/produk', 'as' => 'v1.'], function() {
@@ -30,6 +32,7 @@ Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
 
         Route::get('like/{idProduk}/{idUser}', 'Api\ProdukController@likeProduk');
         Route::get('rating/{idProduk}/{idUser}/{rating}', 'Api\ProdukController@ratingProduk');
+        
         Route::get('like-detail/{id}', 'Api\ProdukController@detailLike');
 
         Route::get('ikm/{id}', 'Api\IkmController@listProduk');
@@ -47,15 +50,15 @@ Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
     });
 
 
-    Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
-        Route::post('update', 'Api\IkmController@updateUser');
-     });
+    // Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
+    //     Route::post('update', 'Api\IkmController@updateUser');
+    //  });
 });
 
 Route::group(['middleware' => ['api', 'auth:api']], function(){
     Route::group(['prefix' => '/v1', 'as' => 'api.'], function () {
         Route::group(['prefix' => '/user', 'as' => 'v1.'], function() {
-            Route::get('show/{id}', 'Api\UserController@show');
+            
             // Route::post('update', 'Api\UserController@update');
          });
     });

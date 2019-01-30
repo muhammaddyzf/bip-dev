@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\MailNotification;
 use App\Ikm;
 use App\User;
+use App\Pengguna;
 use App\Event;
 use App\Provinsi;
 use App\Kabkot;
@@ -17,9 +18,13 @@ class Notifications extends Model
 {
 	public static function mailInvitation($idUser, $idIkm, $idEvent)
 	{
-		$user  = User::find($idUser);
+		//$user  = User::find($idUser);
 		$ikm   = Ikm::where('IKM_ID', $idIkm)->first();
 		$event = Event::where('EVT_ID', $idEvent)->first();
+
+		$pengguna  = Pengguna::where('IKM_ID', $idIkm)->first(); 
+
+		$user = User::where('id', $pengguna->USER_ID)->first();
 
 		$provinsi = Provinsi::where('id', $event->EVT_PROV)->first();
 		$kabkot   = Kabkot::where('id', $event->EVT_KABKOT)->first();

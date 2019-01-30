@@ -27,7 +27,7 @@ class KategoriProdukController extends Controller
     public function index()
     {
         $data = KategoriProduk::all();
-        return view('user.kategori-produk.index', compact('data'));
+        return view('admin.kategori-produk.index', compact('data'));
     }
 
     public function getData()
@@ -37,11 +37,11 @@ class KategoriProdukController extends Controller
         $data = Datatables::of($kategoriProduk)
                
                 ->addColumn('KTPRDK_NAMA', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/produk/kategori-produk/edit/').'" data-id="'.$row->KTPRDK_ID.'" onclick="actionButton(this)">'.$row->KTPRDK_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/produk/kategori-produk/edit/').'" data-id="'.$row->KTPRDK_ID.'" onclick="actionButton(this)">'.$row->KTPRDK_NAMA.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/produk/kategori-produk/hapus/'.$row->KTPRDK_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" onclick="confirmLink(this)" data-href="'.url('admin/produk/kategori-produk/hapus/'.$row->KTPRDK_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -60,7 +60,7 @@ class KategoriProdukController extends Controller
      */
     public function create()
     {
-        return view('user.kategori-produk.add');
+        return view('admin.kategori-produk.add');
     }
 
     /**
@@ -90,7 +90,7 @@ class KategoriProdukController extends Controller
         $data->KTPRDK_USERUPDT= $idUser;
 
         $data->save();
-        return redirect('user/produk/kategori-produk')->with('message','Transaction Success');
+        return redirect('admin/produk/kategori-produk')->with('message','Transaction Success');
     }
 
     /**
@@ -114,7 +114,7 @@ class KategoriProdukController extends Controller
     {
         $data = KategoriProduk::where('KTPRDK_ID', $id)->first();
 
-        return view('user.kategori-produk.edit', compact('data'));
+        return view('admin.kategori-produk.edit', compact('data'));
     }
 
     /**
@@ -140,7 +140,7 @@ class KategoriProdukController extends Controller
             'KTPRDK_USERUPDT'=> $idUser,
         ]);
 
-        return redirect('user/produk/kategori-produk')->with('message','Transaction Success');
+        return redirect('admin/produk/kategori-produk')->with('message','Transaction Success');
     }
 
     /**
@@ -155,9 +155,9 @@ class KategoriProdukController extends Controller
         if($cek->count() == 0){
             $data = KategoriProduk::where('KTPRDK_ID', $id);
             $data->delete();
-            return redirect('user/produk/kategori-produk')->with('message','Transaction Success');
+            return redirect('admin/produk/kategori-produk')->with('message','Transaction Success');
         }else{
-            return redirect('user/produk/kategori-produk')->with('message-failed','Data Sedang Digunakan');
+            return redirect('admin/produk/kategori-produk')->with('message-failed','Data Sedang Digunakan');
         }
     }
 }

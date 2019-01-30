@@ -23,7 +23,7 @@
         <span class="icon-bar"></span>
       </button>
       <div class="navbar-brand navbar-brand-primary navbar-brand-logo navbar-nav-padding-left" style="background-color: #4caf50;">
-        <a style="font-size: 17px;" href="{{route('user.dashboard')}}">
+        <a style="font-size: 17px;" href="{{route('admin.dashboard')}}">
           Banten Information Product
         </a>
       </div>

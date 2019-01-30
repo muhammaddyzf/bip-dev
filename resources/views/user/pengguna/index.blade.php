@@ -12,7 +12,7 @@ navbar
 	<div class="col-md-8 col-lg-12">
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				<a href="{{route('user.pengguna.tambah')}}" class="btn btn-white"><i class="fa fa-plus"></i> Tambah Pengguna</a>
+				<a href="{{route('admin.pengguna.tambah')}}" class="btn btn-white"><i class="fa fa-plus"></i> Tambah Pengguna</a>
 				<br>
 				<table class="table table-bordered table-striped" id="data-pengguna">
 					<thead>

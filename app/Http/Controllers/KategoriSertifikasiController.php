@@ -27,7 +27,7 @@ class KategoriSertifikasiController extends Controller
     public function index()
     {
         $data = KategoriSertifikasi::all();
-        return view('user.kategori-sertifikasi.index', compact('data'));
+        return view('admin.kategori-sertifikasi.index', compact('data'));
     }
 
     public function getData()
@@ -37,11 +37,11 @@ class KategoriSertifikasiController extends Controller
         $data = Datatables::of($kategoriSertifikasi)
                
                 ->addColumn('KTSRT_NAMA', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/sertifikasi/kategori-sertifikasi/edit').'" data-id="'.$row->KTSRT_ID.'" onclick="actionButton(this)">'.$row->KTSRT_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/sertifikasi/kategori-sertifikasi/edit').'" data-id="'.$row->KTSRT_ID.'" onclick="actionButton(this)">'.$row->KTSRT_NAMA.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/sertifikasi/kategori-sertifikasi/hapus/'.$row->KTSRT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" onclick="confirmLink(this)" data-href="'.url('admin/sertifikasi/kategori-sertifikasi/hapus/'.$row->KTSRT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -60,7 +60,7 @@ class KategoriSertifikasiController extends Controller
      */
     public function create()
     {
-        return view('user.kategori-sertifikasi.add');
+        return view('admin.kategori-sertifikasi.add');
     }
 
     /**
@@ -90,7 +90,7 @@ class KategoriSertifikasiController extends Controller
         $data->KTSRT_USERUPDT= $idUser;
 
         $data->save();
-        return redirect('user/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
+        return redirect('admin/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
     }
 
     /**
@@ -114,7 +114,7 @@ class KategoriSertifikasiController extends Controller
     {
         $data = KategoriSertifikasi::where('KTSRT_ID', $id)->first();
 
-        return view('user.kategori-sertifikasi.edit', compact('data'));
+        return view('admin.kategori-sertifikasi.edit', compact('data'));
     }
 
     /**
@@ -140,7 +140,7 @@ class KategoriSertifikasiController extends Controller
             'KTSRT_USERUPDT'=> $idUser,
         ]);
 
-        return redirect('user/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
+        return redirect('admin/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
     }
 
     /**
@@ -155,9 +155,9 @@ class KategoriSertifikasiController extends Controller
         if($cek->count() == 0){
             $data = KategoriSertifikasi::where('KTSRT_ID', $id);
             $data->delete();
-            return redirect('user/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
+            return redirect('admin/sertifikasi/kategori-sertifikasi')->with('message','Transaction Success');
         }else{
-            return redirect('user/sertifikasi/kategori-sertifikasi')->with('message-failed','Data Sedang Digunakan');
+            return redirect('admin/sertifikasi/kategori-sertifikasi')->with('message-failed','Data Sedang Digunakan');
         }
     }
 }

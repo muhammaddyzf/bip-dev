@@ -19,7 +19,8 @@ class EventController extends Controller
 
 		foreach($agendaIkm as $itemAgendaIkm){
 			$dataAgendaIkm[] = array(
-		      'id_pelatihan' => $itemAgendaIkm->id_pelatihan,
+			  'id_ikm'       => $itemAgendaIkm->IKM_ID,	
+	 	      'id_pelatihan' => $itemAgendaIkm->id_pelatihan,
 		      'nama' 		 => $itemAgendaIkm->nama,
 		      'panitia' 	 => $itemAgendaIkm->panitia,
 		      'tgl_dari' 	 => $itemAgendaIkm->tgl_dari,

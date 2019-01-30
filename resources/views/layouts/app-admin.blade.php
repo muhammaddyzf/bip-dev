@@ -73,6 +73,13 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
 
     .breadcrumb { background-color: #ffffff}
   </style>
+
+  <style type="text/css">
+            .swal-title {
+                font-size: 18px;
+                font-weight: 600;
+            }
+        </style>
   @stack('styles')
 
   
@@ -293,11 +300,11 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
           text: "You will leave this page!",
           icon: "warning",
           buttons: true,
-          dangerMode: true,
+          dangerMode: false,
         })
         .then((action) => {
           if (action) {
-            window.location.href = "{{url('logout')}}";
+            window.location.href = "{{url('admin/logout')}}";
           } else {
             return false;
           }
@@ -314,7 +321,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
           text: textConfrim,
           icon: "warning",
           buttons: true,
-          dangerMode: true,
+          dangerMode: false,
         })
         .then((action) => {
           if (action) {
@@ -336,7 +343,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
           text: messages,
           icon: "warning",
           buttons: true,
-          dangerMode: true,
+          dangerMode: false,
         })
         .then((action) => {
           if (action) {
@@ -385,7 +392,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
     $(function() {
         $('select[name=provinsi]').change(function() {
             $('body').loading();
-            var url = '{{ url('user/provinsi') }}'+'/'+ $(this).val() + '/kabkot/';
+            var url = '{{ url('admin/provinsi') }}'+'/'+ $(this).val() + '/kabkot/';
 
             $.get(url, function(data) {
                console.log(data);
@@ -405,7 +412,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
     $(function() {
         $('select[name=kabkot]').change(function() {
             $('body').loading();
-            var url = '{{ url('user/kabkot') }}'+'/'+ $(this).val() + '/kecamatan/';
+            var url = '{{ url('admin/kabkot') }}'+'/'+ $(this).val() + '/kecamatan/';
 
             $.get(url, function(data) {
                 var select = $('form select[name= kecamatan]');
@@ -424,7 +431,7 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
     $(function() {
         $('select[name=kecamatan]').change(function() {
             $('body').loading();
-            var url = '{{ url('user/kecamatan') }}'+'/'+ $(this).val() + '/desa/';
+            var url = '{{ url('admin/kecamatan') }}'+'/'+ $(this).val() + '/desa/';
 
             $.get(url, function(data) {
                 var select = $('form select[name= desa]');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Ikm;
 use App\Provinsi;
 use App\Kecamatan;
@@ -12,13 +13,18 @@ use App\Images;
 use App\Kabkot;
 use App\Desa;
 use App\Produk;
+use App\ProdukToKategoriProduk;
 use App\Sentra;
 use App\IkmToSertifikasi;
 use App\IkmToEvent;
+use App\User;
+use App\Pengguna;
 use Carbon\Carbon;
 use App\GenerateFormatDate;
 use File;
 use Response;
+use App\Imports\IkmImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IkmController extends Controller
 {
@@ -29,7 +35,7 @@ class IkmController extends Controller
      */
     public function index()
     {
-        return view('user.ikm.index');
+        return view('admin.ikm.index');
     }
 
     public function __construct(Request $request)
@@ -47,20 +53,20 @@ class IkmController extends Controller
         $data = Datatables::of($ikm)
                
                 ->addColumn('IKM_NAMA', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/ikm/edit/').'" data-id="'.$row->IKM_ID.'" onclick="actionButton(this)">'.$row->IKM_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/ikm/edit/').'" data-id="'.$row->IKM_ID.'" onclick="actionButton(this)">'.$row->IKM_NAMA.'</a>'; 
                   })
                   ->addColumn('action', function($row){
                       $html = '<div class="text-center">
-                                <a style="display:none" href="#" disabled onclick="confirmLink(this)" data-href="'.url('user/pengguna/kategori-pengguna/hapus/'.$row->IKM_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
-                                </a>
-                                <a href="'.url('user/ikm/produk/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Produk">
+                                <a href="'.url('admin/ikm/produk/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Produk">
                                   <i class="fa fa-dropbox"></i>
                                 </a>
-                                <a href="'.url('user/ikm/sertifikasi/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Sertifikasi">
+                                <a href="'.url('admin/ikm/sertifikasi/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Sertifikasi">
                                   <i class="fa fa-folder"></i>
                                 </a>
-                                <a href="'.url('user/ikm/event/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Event">
+                                <a href="'.url('admin/ikm/event/'.$row->IKM_ID).'" type="button" class="btn btn-default btn-sm" title="Event">
                                   <i class="fa fa-calendar"></i>
+                                </a>
+                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('admin/ikm/hapus/'.$row->IKM_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                             </div>
                             ';
@@ -74,7 +80,7 @@ class IkmController extends Controller
 
     public function import()
     {
-      return view('user.ikm.import');
+      return view('admin.ikm.import');
     }
 
     /**
@@ -90,7 +96,7 @@ class IkmController extends Controller
             'kecamatan'=> Kecamatan::all(),
             'desa'     => Desa::all()
         );
-        return view('user.ikm.add')->with($data);
+        return view('admin.ikm.add')->with($data);
     }
 
     /**
@@ -120,63 +126,72 @@ class IkmController extends Controller
             'kecamatan'     => 'required',
         ]);
 
-        $data = new Ikm;
+        DB::beginTransaction();
+        try {
 
-        $data->IKM_ID         = $this->id;
-        $data->IKM_KODE       = $this->kode;
-        $data->IKM_NAMA       = $request->ikmNama;
-        $data->IKM_NPWP       = $request->ikmNpwp;
-        $data->IKM_NIKPEMILIK = $request->nikPemilik;
-        $data->IKM_PEMILIK    = $request->ikmPemilik;
-        $data->IKM_NOPENDIRIAN= $request->ikmNoPendirian;
-        $data->IKM_DTBERDIRI  = GenerateFormatDate::formatDate($request->ikmDtBerdiri);
-        $data->IKM_JENISUSAHA = $request->ikmJenisUsaha;
-        $data->IKM_TLP        = $request->ikmTlp;
-        $data->IKM_EMAIL      = $request->ikmEmail;
-        $data->IKM_LONGI      = $request->ikmLongi;
-        $data->IKM_LATI       = $request->ikmLati;;
-        $data->IKM_PROV       = $request->provinsi;
-        $data->IKM_BENTUKBADAN= $request->ikmBentukBadan;
-        $data->IKM_THNDIKELUARKANIJIN= $request->ikmThnDiKeluarkanIjin;
-        $data->IKM_KABKOT     = $request->kabkot;
-        $data->IKM_KEC        = $request->kecamatan;
-        $data->IKM_DESA       = $request->desa;
-        $data->IKM_ALMTDET    = $request->ikmAlmtDet;
-        $data->IKM_KET        = $request->ikmKet;
-        $data->IKM_DTINS      = $this->dateInsert;
-        $data->IKM_DTUPDT     = $this->dateUpdate;
-        $data->IKM_USERINS    = $idUser;
-        $data->IKM_USERUPDT   = $idUser;
+            $data = new Ikm;
 
-        $data->save();
+            $data->IKM_ID         = $this->id;
+            $data->IKM_KODE       = $this->kode;
+            $data->IKM_NAMA       = $request->ikmNama;
+            $data->IKM_NPWP       = $request->ikmNpwp;
+            $data->IKM_NIKPEMILIK = $request->nikPemilik;
+            $data->IKM_PEMILIK    = $request->ikmPemilik;
+            $data->IKM_NOPENDIRIAN= $request->ikmNoPendirian;
+            $data->IKM_DTBERDIRI  = GenerateFormatDate::formatDate($request->ikmDtBerdiri);
+            $data->IKM_JENISUSAHA = $request->ikmJenisUsaha;
+            $data->IKM_TLP        = $request->ikmTlp;
+            $data->IKM_EMAIL      = $request->ikmEmail;
+            $data->IKM_LONGI      = $request->ikmLongi;
+            $data->IKM_LATI       = $request->ikmLati;
+            $data->IKM_PROV       = $request->provinsi;
+            $data->IKM_BENTUKBADAN= $request->ikmBentukBadan;
+            $data->IKM_THNDIKELUARKANIJIN= $request->ikmThnDiKeluarkanIjin;
+            $data->IKM_KABKOT     = $request->kabkot;
+            $data->IKM_KEC        = $request->kecamatan;
+            $data->IKM_DESA       = $request->desa;
+            $data->IKM_ALMTDET    = $request->ikmAlmtDet;
+            $data->IKM_KET        = $request->ikmKet;
+            $data->IKM_DTINS      = $this->dateInsert;
+            $data->IKM_DTUPDT     = $this->dateUpdate;
+            $data->IKM_USERINS    = $idUser;
+            $data->IKM_USERUPDT   = $idUser;
 
-        //update images
-        $foto         = "";
-        $originalName = "";
-        if($request->hasFile('ikmImage')){
-            $originalName    = $request->file('ikmImage')->getClientOriginalName();
-        
-            $imageName = time().'.'.$request->ikmImage->getClientOriginalExtension();
-            $foto      = 'images/ikm/'.$imageName;
+            $data->save();
 
-            $request->ikmImage->move(public_path('/images/ikm/'), $imageName);   
+            //update images
+            $foto         = "";
+            $originalName = "";
+            if($request->hasFile('ikmImage')){
+                $originalName    = $request->file('ikmImage')->getClientOriginalName();
+            
+                $imageName = time().'.'.$request->ikmImage->getClientOriginalExtension();
+                $foto      = 'images/ikm/'.$imageName;
+
+                $request->ikmImage->move(public_path('/images/ikm/'), $imageName);   
+            }
+
+            $rand = rand(1000, 9000);
+            $images = new Images;   
+            $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+            $images->ID            = $this->id; 
+            $images->IMG_GROUP     = 'IKM'; 
+            $images->IMG_NAMA      = $foto; 
+            $images->IMG_KET       = $originalName; 
+            $images->IMG_DTINS     = $this->dateInsert;
+            $images->IMG_DTUPDT    = $this->dateUpdate;
+            $images->IMG_USERINS   = $idUser;
+            $images->IMG_USERUPDT  = $idUser;
+
+            $images->save();
+
+        DB::commit();
+        }catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
         }
 
-        $rand = rand(1000, 9000);
-        $images = new Images;   
-        $images->IMG_ID        = 'IMG'.$rand.date('His'); 
-        $images->ID            = $this->id; 
-        $images->IMG_GROUP     = 'IKM'; 
-        $images->IMG_NAMA      = $foto; 
-        $images->IMG_KET       = $originalName; 
-        $images->IMG_DTINS     = $this->dateInsert;
-        $images->IMG_DTUPDT    = $this->dateUpdate;
-        $images->IMG_USERINS   = $idUser;
-        $images->IMG_USERUPDT  = $idUser;
-
-        $images->save();
-
-        return redirect('user/ikm')->with('message','Transaction Success');
+        return redirect('admin/ikm')->with('message','Transaction Success');
     }
 
     /**
@@ -207,7 +222,7 @@ class IkmController extends Controller
             'desa'     => Desa::where('id', $ikm->IKM_DESA)->first(),
             'image'    => Images::where('ID', $id)->first(),
         );
-        return view('user.ikm.edit')->with($data);
+        return view('admin.ikm.edit')->with($data);
     }
 
     /**
@@ -238,66 +253,73 @@ class IkmController extends Controller
             'kecamatan'     => 'required',
         ]);
 
-        $data = Ikm::where('IKM_ID', $id)->update([
-            'IKM_NAMA'=> $request->ikmNama,
-            'IKM_NPWP'=> $request->ikmNpwp,
-            'IKM_NIKPEMILIK'=> $request->nikPemilik,
-            'IKM_PEMILIK'=> $request->ikmPemilik,
-            'IKM_NOPENDIRIAN'=> $request->ikmNoPendirian,
-            'IKM_DTBERDIRI'=> GenerateFormatDate::formatDate($request->ikmDtBerdiri),
-            'IKM_JENISUSAHA'=> $request->ikmJenisUsaha,
-            'IKM_TLP'=> $request->ikmTlp,
-            'IKM_EMAIL'=> $request->ikmEmail,
-            'IKM_LONGI'=> $request->ikmLongi,
-            'IKM_LATI'=> $request->ikmLati,
-            'IKM_PROV'=> $request->provinsi,
-            'IKM_BENTUKBADAN'=> $request->ikmBentukBadan,
-            'IKM_THNDIKELUARKANIJIN'=> $request->ikmThnDiKeluarkanIjin,
-            'IKM_KABKOT'=> $request->kabkot,
-            'IKM_KEC'=> $request->kecamatan,
-            'IKM_DESA'=> $request->desa,
-            'IKM_ALMTDET'=> $request->ikmAlmtDet,
-            'IKM_KET'=> $request->ikmKet,
-            'IKM_DTUPDT'=> $this->dateUpdate,
-            'IKM_USERUPDT'=> $idUser,
-        ]);
+        DB::beginTransaction();
+            try {    
 
-        //update images
-        if($request->hasFile('ikmImage')){
+            $data = Ikm::where('IKM_ID', $id)->update([
+                'IKM_NAMA'=> $request->ikmNama,
+                'IKM_NPWP'=> $request->ikmNpwp,
+                'IKM_NIKPEMILIK'=> $request->nikPemilik,
+                'IKM_PEMILIK'=> $request->ikmPemilik,
+                'IKM_NOPENDIRIAN'=> $request->ikmNoPendirian,
+                'IKM_DTBERDIRI'=> GenerateFormatDate::formatDate($request->ikmDtBerdiri),
+                'IKM_JENISUSAHA'=> $request->ikmJenisUsaha,
+                'IKM_TLP'=> $request->ikmTlp,
+                'IKM_EMAIL'=> $request->ikmEmail,
+                'IKM_LONGI'=> $request->ikmLongi,
+                'IKM_LATI'=> $request->ikmLati,
+                'IKM_PROV'=> $request->provinsi,
+                'IKM_BENTUKBADAN'=> $request->ikmBentukBadan,
+                'IKM_THNDIKELUARKANIJIN'=> $request->ikmThnDiKeluarkanIjin,
+                'IKM_KABKOT'=> $request->kabkot,
+                'IKM_KEC'=> $request->kecamatan,
+                'IKM_DESA'=> $request->desa,
+                'IKM_ALMTDET'=> $request->ikmAlmtDet,
+                'IKM_KET'=> $request->ikmKet,
+                'IKM_DTUPDT'=> $this->dateUpdate,
+                'IKM_USERUPDT'=> $idUser,
+            ]);
 
-            $originalName    = $request->file('ikmImage')->getClientOriginalName();
-        
-            $imageName = time().'.'.$request->ikmImage->getClientOriginalExtension();
-            $foto      = 'images/ikm/'.$imageName;
+            //update images
+            if($request->hasFile('ikmImage')){
 
-            $getImage = Images::where('ID', $id)->first();
+                $originalName    = $request->file('ikmImage')->getClientOriginalName();
+            
+                $imageName = time().'.'.$request->ikmImage->getClientOriginalExtension();
+                $foto      = 'images/ikm/'.$imageName;
 
-            File::delete(public_path($getImage->IMG_NAMA));
+                $getImage = Images::where('ID', $id)->first();
 
-            $request->ikmImage->move(public_path('/images/ikm/'), $imageName);   
-        }else{
+                File::delete(public_path($getImage->IMG_NAMA));
 
-            if($request->oldIkmImage == ""){
-              $foto         = "";
-              $originalName = "";
+                $request->ikmImage->move(public_path('/images/ikm/'), $imageName);   
             }else{
-              $foto         = $request->oldIkmImage;
-              $originalName = $request->oldIkmImage;
+
+                if($request->oldIkmImage == ""){
+                  $foto         = "";
+                  $originalName = "";
+                }else{
+                  $foto         = $request->oldIkmImage;
+                  $originalName = $request->oldIkmImage;
+                }
             }
+
+            $rand = rand(1000, 9000);
+            $images = Images::where('ID', $id)->update([
+
+              'IMG_NAMA'      => $foto, 
+              'IMG_KET'       => $originalName, 
+              'IMG_DTUPDT'    => $this->dateUpdate,
+              'IMG_USERUPDT'  => $idUser,
+
+            ]);   
+
+         DB::commit();
+        }catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
         }
-
-        $rand = rand(1000, 9000);
-        $images = Images::where('ID', $id)->update([
-
-          'IMG_NAMA'      => $foto, 
-          'IMG_KET'       => $originalName, 
-          'IMG_DTUPDT'    => $this->dateUpdate,
-          'IMG_USERUPDT'  => $idUser,
-
-        ]);   
-
-    
-        return redirect('user/ikm')->with('message','Transaction Success');
+        return redirect('admin/ikm')->with('message','Transaction Success');
     }
 
     /**
@@ -308,7 +330,17 @@ class IkmController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ikm   = Ikm::where('IKM_ID', $id)->delete();
+        $image = Images::where('ID', $id)->first();
+
+        $realPathIkm      = public_path('/images/ikm/');
+        if($image->IMG_NAMA != ""){
+          File::delete($realPathIkm.$image->IMG_NAMA);  
+        }
+
+        Images::where('ID', $id)->delete();
+
+
     }
 
     public function produk($id)
@@ -346,7 +378,7 @@ class IkmController extends Controller
             );
         }
 
-        return view('user.ikm.produk', compact('dataArray', 'ikm'));
+        return view('admin.ikm.produk', compact('dataArray', 'ikm'));
     }
 
     public function sertifikasi($id)
@@ -367,7 +399,7 @@ class IkmController extends Controller
             );
         }
 
-        return view('user.ikm.sertifikasi', compact('ikm', 'sertifikasiArray'));
+        return view('admin.ikm.sertifikasi', compact('ikm', 'sertifikasiArray'));
     }
 
     public function event($id)
@@ -401,18 +433,246 @@ class IkmController extends Controller
             );
         }
 
-        return view('user.ikm.event', compact('ikm', 'eventData'));
+        return view('admin.ikm.event', compact('ikm', 'eventData'));
     }
 
     public function downloadExcel() 
     {
-        $file= public_path(). "/doc/format-ikm.xlsx";
+        $file= public_path().'/doc/format-ikm.xlsx';
 
         $headers = array(
                   'Content-Type: application/xlsx',
                 );
 
         return Response::download($file, 'format-data-ikm.xlsx', $headers);
+    }
+
+    public function uploadExcel()
+    {
+        return view('admin.ikm.upload');
+    }
+
+    public function importExcel(Request $request) 
+    {
+        $idUser = Auth::id();
+        if($request->hasFile('file')){
+            $path = $request->file('file')->getRealPath();
+            $data = \Excel::load($path)->get();
+
+            if($data->count()){
+                foreach ($data as $key => $value) {
+                    $rand = rand(1000, 9000);
+
+                    $idProvinsi = 36;
+                    $kabupaten   = Kabkot::where('name', 'LIKE', '%'.$value->kota.'%')->first();
+                    $kecamatan   = Kecamatan::where('name', 'LIKE', '%'.$value->kecamatan.'%')->first();
+                    $desa        = Desa::where('name', 'LIKE', '%'.$value->desa.'%')->first();
+
+                    if($kabupaten){
+                        $idKabkot = $kabupaten->id;
+                    }else{
+                        $idKabkot = 3601;
+                    }
+
+                    if($kecamatan){
+                        $idKecamatan = $kecamatan->id;
+                    }else{
+                        $idKecamatan = 3601010;
+                    }
+
+                    if($desa){
+                        $idDesa = $desa->id;
+                    }else{
+                        $idDesa = 3601010001;
+                    }
+
+                    if($value->telp == ""){
+                        $telp = $rand.date('His');
+                    }else{
+                        $telp = $value->telp;
+                    }
+
+                    if($value->kategori == "IKM"){
+                        $kategoriIkm = 'KATIKMID111111';
+                    }elseif($value->kategori == "Industri Besar"){
+                        $kategoriIkm = 'KATIKMID222222';
+                    }
+
+                    $idIkm = 'IKMID'.$rand.date('His');
+
+                DB::beginTransaction();
+                try {  
+                        $data = new Ikm;
+                        $data->IKM_KAT_ID     = $kategoriIkm;
+                        $data->IKM_ID         = $idIkm;
+                        $data->IKM_KODE       = $rand.date('His');
+                        $data->IKM_NAMA       = $value->nama_perusahaan;
+                        $data->IKM_NPWP       = '';
+                        $data->IKM_NIKPEMILIK = '';
+                        $data->IKM_PEMILIK    = $value->nama_pemilik;
+                        $data->IKM_NOPENDIRIAN= '';
+                        $data->IKM_DTBERDIRI  = date('Y-m-d');
+                        $data->IKM_JENISUSAHA = '';
+                        $data->IKM_TLP        = $telp;
+                        $data->IKM_EMAIL      = '';
+                        $data->IKM_LONGI      = '';
+                        $data->IKM_LATI       = '';
+                        $data->IKM_PROV       = $idProvinsi;
+                        $data->IKM_BENTUKBADAN= $value->bentuk_badan;
+                        $data->IKM_THNDIKELUARKANIJIN= $value->tahun_dikeluarkan_ijin;
+                        $data->IKM_KABKOT     = $idKabkot;
+                        $data->IKM_KEC        = $idKecamatan;
+                        $data->IKM_DESA       = $idDesa;
+                        $data->IKM_ALMTDET    = $value->jalan;
+                        $data->IKM_KET        = '';
+                        $data->IKM_DTINS      = $this->dateInsert;
+                        $data->IKM_DTUPDT     = $this->dateUpdate;
+                        $data->IKM_USERINS    = $idUser;
+                        $data->IKM_USERUPDT   = $idUser;
+                        $data->save();
+
+                        //update images
+                        $rand = rand(1000, 9000);
+                        $images = new Images;   
+                        $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                        $images->ID            = $idIkm; 
+                        $images->IMG_GROUP     = 'IKM'; 
+                        $images->IMG_NAMA      = ''; 
+                        $images->IMG_KET       = 'IKM IMAGE'; 
+                        $images->IMG_DTINS     = $this->dateInsert;
+                        $images->IMG_DTUPDT    = $this->dateUpdate;
+                        $images->IMG_USERINS   = $idUser;
+                        $images->IMG_USERUPDT  = $idUser;
+                        $images->save();
+
+                        //Produk
+                        $data = new Produk;
+                        $prdkId = 'PRDKID'.$rand.date('His');
+                        $data->PRDK_ID        = $prdkId;
+                        $data->IKM_ID         = $idIkm;
+                        $data->PRDK_KODE      = $rand.date('His');
+                        $data->PRDK_NAMA      = $value->nama_produk;
+                        $data->PRDK_KOMPOSISI = '';
+                        $data->PRDK_KET       = '';
+                        $data->PRDK_KBLI      = $value->kbli;
+                        $data->PRDK_TAMPIL    = 1;
+                        $data->PRDK_DTINS     = $this->dateInsert;
+                        $data->PRDK_DTUPDT    = $this->dateUpdate;
+                        $data->PRDK_USERINS   = $idUser;
+                        $data->PRDK_USERUPDT  = $idUser;
+                        $data->PRDK_PEMASARAN = $value->pemasaran;
+                        $data->PRDK_BBBP                    = $value->bbbp;
+                        $data->PRDK_NILAIPRODUKSI           = $value->nilai_produksi;
+                        $data->PRDK_SATUANKAPASITASPRODUKSI = $value->satuan_kapasitas_produksi;
+                        $data->PRDK_JUMLAHKAPASITASPRODUKSI = $value->jumlah_kapasitas_produksi;
+                        $data->PRDK_NILAIINVESTASI          = $value->nilai_investasi;
+                        $data->PRDK_TENAGAKERJA             = $value->tenaga_kerja;
+
+                        $data->save();
+
+                         //update images Produk
+                        $rand = rand(1000, 9000);
+                        $images = new Images;   
+                        $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                        $images->ID            = $prdkId; 
+                        $images->IMG_GROUP     = 'PRDK'; 
+                        $images->IMG_NAMA      = ''; 
+                        $images->IMG_KET       = 'PRODUK IMAGE'; 
+                        $images->IMG_DTINS     = $this->dateInsert;
+                        $images->IMG_DTUPDT    = $this->dateUpdate;
+                        $images->IMG_USERINS   = $idUser;
+                        $images->IMG_USERUPDT  = $idUser;
+                        $images->save();
+
+                        //Kategori Produk
+                        $rand = rand(1000, 9000);
+                        $produkToKategoriProduk = new ProdukToKategoriProduk;
+                        $produkToKategoriProduk->PTK_ID        = 'PTK'.$rand.date('His');
+                        $produkToKategoriProduk->KTPRDK_ID     = 'KTPRDKID4533120446'; 
+                        $produkToKategoriProduk->PRDK_ID       = $prdkId; 
+                        $produkToKategoriProduk->PTK_KET       = ''; 
+                        $produkToKategoriProduk->PTK_DTINS     = $this->dateInsert;
+                        $produkToKategoriProduk->PTK_DTUPDT    = $this->dateUpdate;
+                        $produkToKategoriProduk->PTK_USERINS   = $idUser;
+                        $produkToKategoriProduk->PTK_USERUPDT  = $idUser;
+
+                        $produkToKategoriProduk->save();
+
+
+                        //Create User
+                        $username = User::getUserName($value->nama_pemilik, date('His'));   
+                        $user     = User::create([
+                                    'name'     => $value->nama_pemilik,
+                                    'email'    => $username,
+                                    'username' => $username,
+                                    'password' => bcrypt('123456'),
+                                  ]); 
+
+
+                        //Pengguna
+                        $rand = rand(1000, 9000);
+                        $pengguna = new Pengguna;
+                        $pengguna->PNG_ID       = 'PNGID'.$rand.date('His'); 
+                        $pengguna->IKM_ID       = $idIkm;
+                        $pengguna->PNG_NIK      = '';
+                        $pengguna->PNG_PEND     = '';
+                        $pengguna->PNG_TLP      = '';
+                        $pengguna->PNG_ALMNT    = '';
+                        $pengguna->PNG_EMAIL    = '';
+                        $pengguna->USER_ID      = $user->id;
+                        $pengguna->KTPNG_ID     = 'KTPNGID7663231943';
+                        $pengguna->PNG_NAMA     = $value->nama_pemilik;
+                        $pengguna->PNG_DTINS    = $this->dateInsert;
+                        $pengguna->PNG_DTUPDT   = $this->dateUpdate;
+                        $pengguna->PNG_USERINS  = '';
+                        $pengguna->PNG_USERUPDT = '';
+                        $pengguna->save();
+
+                        $token                  = $user->createToken($username)-> accessToken; 
+                        $updateToken            = User::find($user->id);
+                        $updateToken->token     = $token;
+                        $updateToken->save();
+
+
+                        //Image User
+                        $rand = rand(1000, 9000);
+                        $images = new Images;   
+                        $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                        $images->ID            = $user->id; 
+                        $images->IMG_GROUP     = 'USER'; 
+                        $images->IMG_NAMA      = ''; 
+                        $images->IMG_KET       = 'PRODUK IMAGE'; 
+                        $images->IMG_DTINS     = $this->dateInsert;
+                        $images->IMG_DTUPDT    = $this->dateUpdate;
+                        $images->IMG_USERINS   = $idUser;
+                        $images->IMG_USERUPDT  = $idUser;
+                        $images->save();
+
+                        DB::commit();
+                }catch (\Exception $e) {
+                    DB::rollback();
+                    // something went wrong
+                }
+                        
+                }
+
+            }
+        } 
+
+        return redirect('admin/ikm')->with('message','Transaction Success');
+    }
+
+
+    public function cetakLaporan($type){
+
+        $products = Product::get()->toArray();
+
+        return \Excel::create('expertphp_demo', function($excel) use ($products) {
+            $excel->sheet('sheet name', function($sheet) use ($products)
+            {
+                $sheet->fromArray($products);
+            });
+        })->download($type);
     }
 
     

@@ -32,7 +32,7 @@ class SertifikasiController extends Controller
      */
     public function index()
     {
-        return view('user.sertifikasi.index');
+        return view('admin.sertifikasi.index');
     }
 
     public function getData()
@@ -40,20 +40,20 @@ class SertifikasiController extends Controller
         $sertifikasi = Sertifikasi::all();
         $data = Datatables::of($sertifikasi)
                 ->addColumn('sertifikasi', function($row){
-                     return $html = '<a href="#" data-href="'.url('user/sertifikasi/edit/').'" data-id="'.$row->SRT_ID.'" onclick="actionButton(this)">'.$row->SRT_NAMA.'</a>'; 
+                     return $html = '<a href="#" data-href="'.url('admin/sertifikasi/edit/').'" data-id="'.$row->SRT_ID.'" onclick="actionButton(this)">'.$row->SRT_NAMA.'</a>'; 
                 })
                 ->addColumn('action', function($row){
                       $event = "";
                       $ikm   = "";
                       if($row->SRT_NEEDEVENT != 0 ){
-                        $event = '<a href="'.url('user/event/tambah/'.$row->SRT_ID).'" type="button" class="btn btn-success btn-sm" title="Tambah Event"><i class="fa fa-calendar"></i>
+                        $event = '<a href="'.url('admin/event/tambah/'.$row->SRT_ID).'" type="button" class="btn btn-success btn-sm" title="Tambah Event"><i class="fa fa-calendar"></i>
                                 </a>';
                       }else{
-                        $ikm = '<a href="'.url('user/sertifikasi/tambah-ikm/'.$row->SRT_ID).'" type="button" class="btn btn-primary btn-sm" title="Tambah IKM"><i class="fa fa-institution"></i>
+                        $ikm = '<a href="'.url('admin/sertifikasi/tambah-ikm/'.$row->SRT_ID).'" type="button" class="btn btn-primary btn-sm" title="Tambah IKM"><i class="fa fa-institution"></i>
                                 </a>';
                       }
                       $html = '<div class="text-center">
-                                <a href="#" onclick="confirmLink(this)" data-href="'.url('user/sertifikasi/hapus/'.$row->SRT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
+                                <a href="#" style="display:none" onclick="confirmLink(this)" data-href="'.url('admin/sertifikasi/hapus/'.$row->SRT_ID).'" data-text="Your previous data will change" type="button" class="btn btn-danger btn-sm" title="delete"><i class="fa fa-trash"></i>
                                 </a>
                                 '.$event.$ikm.'
                             </div>
@@ -75,7 +75,7 @@ class SertifikasiController extends Controller
     {
         $kategoriSertifikasi = KategoriSertifikasi::all();
 
-        return view('user.sertifikasi.add', compact('kategoriSertifikasi'));
+        return view('admin.sertifikasi.add', compact('kategoriSertifikasi'));
     }
 
     /**
@@ -138,7 +138,7 @@ class SertifikasiController extends Controller
 
         $images->save();
         
-        return redirect('user/sertifikasi/list')->with('message','Transaction Success');
+        return redirect('admin/sertifikasi/list')->with('message','Transaction Success');
     }
 
     /**
@@ -160,7 +160,10 @@ class SertifikasiController extends Controller
      */
     public function edit($id)
     {
-        //
+        $kategoriSertifikasi = KategoriSertifikasi::all();
+        $sertifikasi = Sertifikasi::where('SRT_ID', $id)->first();
+
+        return view('admin.sertifikasi.edit', compact('kategoriSertifikasi', 'sertifikasi'));
     }
 
     /**
@@ -172,7 +175,73 @@ class SertifikasiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $idUser = Auth::id();
+        $request->validate([
+            'ktsrtId'    => 'required',
+            'srtNama'    => 'required',
+            'srtSyarat'  => 'required',
+            'srtSpek'    => 'required',
+            'srtBobot'   => 'required|alpha_dash|max:4',
+            'event'      => 'required',
+        ]);
+
+        $data = Sertifikasi::where('SRT_ID', $id)->update([
+            'KTSRT_ID'     => $request->ktsrtId,
+            'SRT_NAMA'     => $request->srtNama,
+            'SRT_SYARAT'   => $request->srtSyarat,
+            'SRT_SPEK'     => $request->srtSpek,
+            'SRT_KET'      => $request->srtKet,
+            'SRT_BOBOT'    => $request->srtBobot,
+            'SRT_NEEDEVENT'=> $request->event,
+            'SRT_DTUPDT'   => $this->dateUpdate,
+            'SRT_USERUPDT' => $idUser,
+        ]);
+
+        //update images
+        $foto = "";
+        if($request->hasFile('lampiran')){
+            $getImages       = Images::where('ID', $id)->first();
+            $originalName    = $request->file('lampiran')->getClientOriginalName();
+            //$sizeFile        = getimagesize($originalName);
+
+            $imageName = time().'.'.$request->lampiran->getClientOriginalExtension();
+            $foto      = 'images/user/'.$imageName;
+
+
+            if(isset($getImages)){
+              if($getImages->IMG_NAMA == ""){
+                  $request->lampiran->move(public_path('/images/sertifikasi/'), $imageName);
+              }else{
+                  File::delete(public_path($getImages->IMG_NAMA));
+                  $request->lampiran->move(public_path('/images/sertifikasi/'), $imageName);
+              }
+
+              $images = Images::where('ID', $id)
+                        ->update([
+                              'IMG_NAMA'      => $foto,
+                              'IMG_DTUPDT'    => $this->dateUpdate,
+                              'IMG_USERUPDT'  => $id,
+                        ]);
+          }else{
+                $request->lampiran->move(public_path('/images/sertifikasi/'), $imageName);
+                
+                $rand = rand(1000, 9000);
+                $images = new Images;   
+                $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+                $images->ID            = $id; 
+                $images->IMG_GROUP     = 'User'; 
+                $images->IMG_NAMA      = $foto; 
+                $images->IMG_KET       = $originalName; 
+                $images->IMG_DTINS     = $this->dateInsert;
+                $images->IMG_DTUPDT    = $this->dateUpdate;
+                $images->IMG_USERINS   = $id;
+                $images->IMG_USERUPDT  = $id;
+
+                $images->save();
+            }
+        }
+
+        return redirect('admin/sertifikasi/list')->with('message','Transaction Success');
     }
 
     /**
@@ -195,7 +264,7 @@ class SertifikasiController extends Controller
         }
 
         $data = Sertifikasi::where('SRT_ID', $id)->delete();
-        return redirect('user/sertifikasi/list')->with('message','Transaction Success');
+        return redirect('admin/sertifikasi/list')->with('message','Transaction Success');
     }
 
     public function createIkmToSertifikasi(Request $request, $id)
@@ -206,7 +275,7 @@ class SertifikasiController extends Controller
             'sertifikasi' => $sertifikasi,
             'ikm'         => $ikm
         );
-        return view('user.sertifikasi.add-ikm-to-sertifikasi')->with($data);
+        return view('admin.sertifikasi.add-ikm-to-sertifikasi')->with($data);
     }
 
     public function storeIkmToSertifikasi(Request $request)
@@ -240,4 +309,5 @@ class SertifikasiController extends Controller
 
         return back()->with('message','Transaction Success');
     }
+
 }
