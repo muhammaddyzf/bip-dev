@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Ikm;
+use App\Produk;
 
 class DashboardController extends Controller
 {
@@ -23,6 +25,10 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('user.dashboard');
+        $totalIkm           = Ikm::where('IKM_KAT_ID','=','KATIKMID111111')->count();
+        $totalIndustriBesar = Ikm::where('IKM_KAT_ID','=','KATIKMID222222')->count();
+        $totalProduk        = Produk::count();
+
+        return view('admin.dashboard', compact('totalIkm', 'totalIndustriBesar', 'totalProduk'));
     }
 }

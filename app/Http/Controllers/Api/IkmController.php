@@ -28,7 +28,7 @@ class IkmController extends Controller
 			if($row->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($row->images['IMG_NAMA']);
+                $images = url('public/'.$row->images['IMG_NAMA']);
             }
 			$dataJson[] = array(
 				'id_ikm'		=> $row->IKM_ID,
@@ -77,7 +77,7 @@ class IkmController extends Controller
 			if($data->images['IMG_NAMA'] == ""){
                 $imagesIkm = Images::imageDefault();
             }else{
-                $imagesIkm = url($data->images['IMG_NAMA']);
+                $imagesIkm = url('public/'.$data->images['IMG_NAMA']);
             }
 
             $ratingProduk = 0;
@@ -165,7 +165,7 @@ class IkmController extends Controller
 			if($row->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($row->images['IMG_NAMA']);
+                $images = url('public/'.$row->images['IMG_NAMA']);
             }
 			$dataJson[] = array(
 				'id_ikm'		=> $row->IKM_ID,
@@ -218,7 +218,7 @@ class IkmController extends Controller
             if($row->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($row->images['IMG_NAMA']);
+                $images = url('public/'.$row->images['IMG_NAMA']);
             }
 
             if($row->ratingProduk->count() > 0){
@@ -336,7 +336,7 @@ class IkmController extends Controller
         if($user->images['IMG_NAMA'] == ""){
             $images = Images::imageDefault();
         }else{
-            $images = url($user->images['IMG_NAMA']);
+            $images = url('public/'.$user->images['IMG_NAMA']);
         }
 
         $data = array(

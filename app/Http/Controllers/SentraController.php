@@ -196,4 +196,50 @@ class SentraController extends Controller
         $data->delete();
         return redirect('admin/sentra')->with('message','Transaction Success');
     }
+
+    public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = Sentra::where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->get();
+
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->id_provinsi)->first();
+            $kabupaten   = Kabkot::where('id', $item->id_kabkot)->first();
+            $kecamatan   = Kecamatan::where('id', $item->id_kecamatan)->first();
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Sentra'     => $item->nama_sentra,
+                'Jenis Produk'     => $item->jenis_produk,
+                'Jumlah Unit Usaha'     => $item->jumlah_unit_usaha,
+                'Kontak Person'     => $item->kontak_person,
+                'Alamat'         => $item->alamat,
+                'Provinsi'       => $provinsi->name,
+                'Kabupaten/Kota' => $kabupaten->name,
+                'Kecamatan'      => $kecamatan->name,
+                'Tenaga Kerja'      => $item->tenaga_kerja,
+                'Nilai Investasi'      => $item->nilai_investasi,
+                'Kapasitas Produksi'      => $item->kapasitas_produksi,
+            );
+            $no++;
+        }
+
+
+        if($datas->count() > 0){
+            return \Excel::create('sentra', function($excel) use ($data) {
+                $excel->sheet('sentra', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+        }else{
+            return redirect('admin/sentra')->with('message-failed','Transaction Success');
+        }
+    }
 }

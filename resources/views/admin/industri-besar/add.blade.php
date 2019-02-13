@@ -1,30 +1,30 @@
 @extends('layouts.app-admin')
-@section('title', 'Tambah IKM')
+@section('title', 'Tambah Industri Besar')
 @section('navbar')
 navbar
 @endsection
 
 @section('content')
-<h1 class="lead">IKM</h1>
-{{ Breadcrumbs::render('tambah-ikm') }}
+<h1 class="lead">Industri Besar</h1>
+{{-- {{ Breadcrumbs::render('tambah-ikm') }} --}}
 
 
 <div class="row">
 	<div class="col-md-8 col-lg-12">
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				<form action="{{url('admin/ikm/simpan')}}" method="post" id="form-ikm" enctype="multipart/form-data">
+				<form action="{{url('admin/industri-besar/simpan')}}" method="post" id="form-ikm" enctype="multipart/form-data">
 					@csrf
 					
 					<div class="panel panel-default">
-						<div class="panel-heading"><h4 class="panel-title">Data IKM</h4></div>
+						<div class="panel-heading"><h4 class="panel-title">Data Industri Besar</h4></div>
 						<div class="panel-body">
 
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group form-control-material @if($errors->has('ikmNama')) has-danger @endif static required">
-										<input type="text" class="form-control" id="ikmNama" placeholder="Nama IKM" name="ikmNama">
-										<label>Nama IKM</label>
+										<input type="text" class="form-control" id="ikmNama" placeholder="Nama Industri" name="ikmNama">
+										<label>Nama Industri</label>
 									</div>
 
 									<div class="row">
@@ -48,50 +48,56 @@ navbar
 										</div>
 									</div>
 
-									<div class="row">
+									{{-- <div class="row">
 										<div class="col-md-6">
-											<div class="form-group form-control-material @if($errors->has('ikmNoPendirian')) has-danger @endif static required">
+											<div class="form-group form-control-material @if($errors->has('ikmNoPendirian')) has-danger @endif">
 												<input type="text" class="form-control" id="ikmNoPendirian" placeholder="Nomor Pendirian" name="ikmNoPendirian">
 												<label>Nomor Pendirian</label>
 											</div>
 										</div>
 										<div class="col-md-6">
-											<div class="form-group form-control-material @if($errors->has('ikmDtBerdiri')) has-danger @endif static required">
+											<div class="form-group form-control-material @if($errors->has('ikmDtBerdiri')) has-danger @endif">
 												<input type="text" class="form-control datepicker" id="ikmDtBerdiri" placeholder="Tanggal Pendirian" name="ikmDtBerdiri">
 												<label>Tanggal Pendirian</label>
 											</div>
 										</div>
-									</div>
+									</div> --}}
 
-									<div class="row">
+									{{-- <div class="row">
 										<div class="col-md-6">
-											<div class="form-group form-control-material @if($errors->has('ikmThnDiKeluarkanIjin')) has-danger @endif static required">
+											<div class="form-group form-control-material @if($errors->has('ikmThnDiKeluarkanIjin')) has-danger @endif">
 												<input type="text" class="form-control" id="ikmThnDiKeluarkanIjin" placeholder="YYYY" name="ikmThnDiKeluarkanIjin">
 												<label>Tahun Dikelarkan Ijin</label>
 											</div>
 										</div>
 										<div class="col-md-6">
+											<div class="form-group form-control-material @if($errors->has('ikmBentukBadan')) has-danger @endif">
+												<input type="text" class="form-control" id="ikmBentukBadan" placeholder="Bentuk Badan" name="ikmBentukBadan">
+												<label>Bentuk Badan</label>
+											</div>
+										</div>
+									</div> --}}
+
+									<div class="row">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('ikmBentukBadan')) has-danger @endif static required">
 												<input type="text" class="form-control" id="ikmBentukBadan" placeholder="Bentuk Badan" name="ikmBentukBadan">
 												<label>Bentuk Badan</label>
 											</div>
 										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group form-control-material @if($errors->has('ikmJenisUsaha')) has-danger @endif">
-												<input type="text" class="form-control" id="ikmJenisUsaha" placeholder="Jenis Usaha" name="ikmJenisUsaha">
-												<label>Jenis Usaha</label>
+										<div class="col-md-3">
+											<div class="form-group form-control-material @if($errors->has('ikmJenisUsaha')) has-danger @endif static required">
+												<input type="text" class="form-control" id="ikmJenisUsaha" placeholder="Kelompok Industri" name="ikmJenisUsaha">
+												<label>Kelompok Industri</label>
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('ikmTlp')) has-danger @endif static required">
 												<input type="text" class="form-control" id="ikmTlp" placeholder="Nomor Telephone" name="ikmTlp">
 												<label>Nomor Telephone</label>
 											</div>
 										</div>
-										<div class="col-md-4">
+										<div class="col-md-3">
 											<div class="form-group form-control-material @if($errors->has('ikmEmail')) has-danger @endif static required">
 												<input type="text" class="form-control" id="ikmEmail" placeholder="Email" name="ikmEmail">
 												<label>Email</label>
@@ -168,7 +174,7 @@ navbar
 										<div class="col-md-6">
 											<div class="form-group form-control-material @if($errors->has('ikmKet')) has-danger @endif">
 												<textarea class="form-control" id="ikmKet" name="ikmKet"></textarea>
-												<label>Keterangan IKM</label>
+												<label>Keterangan</label>
 											</div>
 										</div>
 										<div class="col-md-6">

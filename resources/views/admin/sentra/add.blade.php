@@ -16,28 +16,28 @@ navbar
 					@csrf
 					<div class="row">
 						<div class="col-md-6">
-							<div class="form-group form-control-material @if($errors->has('namaSentra')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('namaSentra')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Nama Sentra" name="namaSentra">
 								
 								<label>Nama Sentra</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('jenisProduk')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('jenisProduk')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Jenis Produk" name="jenisProduk">
 								
 								<label>Jenis Produk</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('jumlahUnitUsaha')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('jumlahUnitUsaha')) has-danger @endif static required">
 								<input type="number" class="form-control" id="kode" placeholder="Jumlah Unit Usaha" name="jumlahUnitUsaha">
 								
 								<label>Jumlah Unit Usaha</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('kontakPerson')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('kontakPerson')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Kontak Person" name="kontakPerson">
 								
 								<label>Kontak Person</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif static required">
 								<select name="provinsi" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($provinsi as $dataProvinsi)
@@ -48,7 +48,7 @@ navbar
 								<label>Provinsi</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif static required">				
 								<select name="kabkot" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kabkot as $dataKabkot)
@@ -58,7 +58,7 @@ navbar
 								<label>Kabkot</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif static required">				
 								<select name="kecamatan" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kecamatan as $dataKecamatan)
@@ -67,7 +67,7 @@ navbar
 								</select>
 								<label>Kecamatan</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif static required">
 								<textarea class="form-control" id="kode" placeholder="Alamat" name="alamat"></textarea>
 								<label>Alamat</label>
 							</div>
@@ -76,15 +76,15 @@ navbar
 						</div>
 						<div class="col-md-6">
 
-							<div class="form-group form-control-material @if($errors->has('tenagaKerja')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('tenagaKerja')) has-danger @endif static required">
 								<input type="number" class="form-control" id="kode" placeholder="Tenaga Kerja" name="tenagaKerja">
 								<label>Tenaga Kerja</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('nilaiInvestasi')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('nilaiInvestasi')) has-danger @endif static required">
 								<input type="number" class="form-control" id="kode" placeholder="Nilai Investasi" name="nilaiInvestasi">
 								<label>Nilai Investasi</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('kapasitasProduksi')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('kapasitasProduksi')) has-danger @endif static required">
 								<input type="number" class="form-control" id="kode" placeholder="Kapasitas Produksi" name="kapasitasProduksi">
 								<label>Kapasitas Produksi</label>
 							</div>

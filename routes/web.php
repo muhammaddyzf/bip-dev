@@ -37,6 +37,8 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::get('edit/pasar-tradisional/{id}', 'PasarTradisionalController@edit')->name('admin.edit.pasar-tradisional');
     Route::post('simpan/pasar-tradisional', 'PasarTradisionalController@store')->name('admin.simpan.pasar-tradisional');
     Route::post('update/pasar-tradisional/{id}', 'PasarTradisionalController@update')->name('admin.update.pasar-tradisional');
+    Route::post('pasar-tradisional/cetak-laporan', 'PasarTradisionalController@cetakLaporan')->name('pasar-tradisional.cetak-laporan');
+
     //Route Pasar Modern
     Route::get('pasar-modern', 'PasarModernController@index')->name('admin.pasar-modern');
     Route::get('data-pasar-modern', 'PasarModernController@getData')->name('admin.data-pasar-modern');
@@ -45,6 +47,8 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::get('edit/pasar-modern/{id}', 'PasarModernController@edit')->name('admin.edit.pasar-modern');
     Route::post('simpan/pasar-modern', 'PasarModernController@store')->name('admin.simpan.pasar-modern');
     Route::post('update/pasar-modern/{id}', 'PasarModernController@update')->name('admin.update.pasar-modern');
+    Route::post('pasar-modern/cetak-laporan', 'PasarModernController@cetakLaporan')->name('pasar-modern.cetak-laporan');
+
     //Route Sentra
     Route::get('sentra', 'SentraController@index')->name('admin.sentra');
     Route::get('data-sentra', 'SentraController@getData')->name('admin.data-sentra');
@@ -53,6 +57,7 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::get('edit/sentra/{id}', 'SentraController@edit')->name('admin.edit.sentra');
     Route::post('simpan/sentra', 'SentraController@store')->name('admin.simpan.sentra');
     Route::post('update/sentra/{id}', 'SentraController@update')->name('admin.update.sentra');
+    Route::post('sentra/cetak-laporan', 'SentraController@cetakLaporan')->name('sentra.cetak-laporan');
 
     //Route IKM
     Route::get('ikm', 'IkmController@index')->name('admin.ikm');
@@ -72,6 +77,27 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::get('ikm/sertifikasi/{id}', 'IkmController@sertifikasi')->name('admin.ikm.sertifikasi');
     Route::get('ikm/event/{id}', 'IkmController@event')->name('admin.ikm.event');
 
+    Route::post('ikm/cetak-laporan', 'IkmController@cetakLaporanIkm')->name('ikm.cetak-laporan');
+
+
+    //Industri Besar
+    Route::get('industri-besar', 'IndustriBesarController@index')->name('admin.industri-besar');
+    Route::get('industri-besar/data-industri-besar', 'IndustriBesarController@getData')->name('admin.industri-besar.get-data');
+    Route::get('industri-besar/upload', 'IndustriBesarController@uploadExcel')->name('admin.industri-besar.upload');
+    Route::post('industri-besar/import', 'IndustriBesarController@importExcel')->name('admin.industri-besar.import');
+    Route::get('industri-besar/download-excel', 'IndustriBesarController@downloadExcel')->name('admin.industri-besar.download-excel');
+    Route::get('industri-besar/tambah', 'IndustriBesarController@create')->name('admin.industri-besar.tambah');
+    Route::post('industri-besar/simpan', 'IndustriBesarController@store')->name('admin.industri-besar.simpan');
+
+    Route::get('industri-besar/edit/{id}', 'IndustriBesarController@edit')->name('admin.industri-besar.edit');
+    Route::post('industri-besar/update/{id}', 'IndustriBesarController@update')->name('admin.industri-besar.update');
+
+    Route::get('industri-besar/produk/{id}', 'IkmController@produk')->name('admin.industri-besar.produk');
+    Route::get('industri-besar/sertifikasi/{id}', 'IkmController@sertifikasi')->name('admin.industri-besar.sertifikasi');
+    Route::get('industri-besar/event/{id}', 'IkmController@event')->name('admin.industri-besar.event');
+
+
+    Route::post('industri-besar/cetak-laporan', 'IndustriBesarController@cetakLaporan')->name('industri-besar.cetak-laporan');
 
     //Route Wilayah
     Route::get('provinsi/{provinsi}/kabkot', 'ProvinsiController@getKabkot');
@@ -116,7 +142,6 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
         Route::get('edit/{id}', 'ProdukController@edit')->name('admin.produk.edit');
         Route::post('update/{id}', 'ProdukController@update')->name('admin.produk.update');
         Route::get('hapus/{id}', 'ProdukController@destroy')->name('admin.produk.hapus');
-
 
         Route::get('generate-qr/{id}', 'ProdukController@generateQr')->name('admin.produk.generate-qr');  
     });
@@ -192,6 +217,7 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::post('importir/update/{id}', 'ImportirController@update')->name('importir.update');
     Route::get('importir/delete/{id}', 'ImportirController@destroy')->name('importir.destroy');
     Route::get('data-importir', 'ImportirController@getData')->name('data-importir'); 
+    Route::post('importir/cetak-laporan', 'ImportirController@cetakLaporan')->name('importir.cetak-laporan');
 
     // Eksportir
     Route::get('eksportir/index', 'EksportirController@index')->name('eksportir.index');
@@ -201,6 +227,7 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
     Route::post('eksportir/update/{id}', 'EksportirController@update')->name('eksportir.update');
     Route::get('eksportir/delete/{id}', 'EksportirController@destroy')->name('eksportir.destroy');
     Route::get('data-eksportir', 'EksportirController@getData')->name('data-eksportir'); 
+    Route::post('eksportir/cetak-laporan', 'EksportirController@cetakLaporan')->name('eksportir.cetak-laporan');
 });
 
 

@@ -44,7 +44,7 @@ public $successStatus = 200;
             if($login->images->IMG_NAMA == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($login->images->IMG_NAMA);
+                $images = url('public/'.$login->images->IMG_NAMA);
             }
 
             $data = array(
@@ -145,7 +145,7 @@ public $successStatus = 200;
         if($user->images['IMG_NAMA'] == ""){
             $images = Images::imageDefault();
         }else{
-            $images = url($user->images['IMG_NAMA']);
+            $images = url('public/'.$user->images['IMG_NAMA']);
         }
         $data = array(
         	'id_user'		=> $user->id,
@@ -212,7 +212,7 @@ public $successStatus = 200;
         if($user->images['IMG_NAMA'] == ""){
             $images = Images::imageDefault();
         }else{
-            $images = url($user->images['IMG_NAMA']);
+            $images = url('public/'.$user->images['IMG_NAMA']);
         }
 
         $data = array(
@@ -309,7 +309,7 @@ public $successStatus = 200;
         if($user->images['IMG_NAMA'] == ""){
             $images = Images::imageDefault();
         }else{
-            $images = url($user->images['IMG_NAMA']);
+            $images = url('public/'.$user->images['IMG_NAMA']);
         }
 
         $data = array(

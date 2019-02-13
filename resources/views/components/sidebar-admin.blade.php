@@ -20,6 +20,13 @@
             <a href="{{route('admin.ikm')}}"><i class="fa fa-institution"></i>
               <span>IKM</span>
             </a>
+      </li> 
+      <li class="{{ Request::is([
+            'admin/industri-besar', 'admin/industri-besar*'
+            ]) ? 'active':''}}">
+            <a href="{{route('admin.industri-besar')}}"><i class="fa fa-building"></i>
+              <span>Industri Besar</span>
+            </a>
       </li>
       <li ><a href="{{route('admin.pasar-tradisional')}}"><i class="fa fa-home"></i><span>Pasar Tradisional</span></a></li>
       <li ><a href="{{route('admin.pasar-modern')}}"><i class="fa fa-shopping-cart"></i><span>Pasar Modern</span></a></li>

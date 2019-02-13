@@ -48,6 +48,26 @@ class ImportirController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'namaPerusahaan' => 'required',
+            'alamatPerusahaan'=> 'required',
+            'npwp'=> 'required',
+            'namaPemilik'=> 'required',
+            'email'=> 'required',
+            'telp'=> 'required',
+            'nomorApi'=> 'required',
+            'uraianBarang'=> 'required',
+            'posTaris'=> 'required',
+            'volumeKuantitas'=> 'required',
+            'volumeSatuan'=> 'required',
+            'nilai'=> 'required',
+            'nilaiSatuan'=> 'required',
+            'negaraAsal'=> 'required',
+            'pelabuhanBongkar'=> 'required',
+            'pibNomor'=> 'required',
+            'pibTanggal'=> 'required',
+        ]);
+
         $importir = new Importir;
         $importir->nama_perusahaan = $request->namaPerusahaan;
         $importir->alamat_perusahaan = $request->alamatPerusahaan;
@@ -81,6 +101,26 @@ class ImportirController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'namaPerusahaan' => 'required',
+            'alamatPerusahaan'=> 'required',
+            'npwp'=> 'required',
+            'namaPemilik'=> 'required',
+            'email'=> 'required',
+            'telp'=> 'required',
+            'nomorApi'=> 'required',
+            'uraianBarang'=> 'required',
+            'posTaris'=> 'required',
+            'volumeKuantitas'=> 'required',
+            'volumeSatuan'=> 'required',
+            'nilai'=> 'required',
+            'nilaiSatuan'=> 'required',
+            'negaraAsal'=> 'required',
+            'pelabuhanBongkar'=> 'required',
+            'pibNomor'=> 'required',
+            'pibTanggal'=> 'required',
+        ]);
+        
         $importir = Importir::find($id);
         $importir->nama_perusahaan = $request->namaPerusahaan;
         $importir->alamat_perusahaan = $request->alamatPerusahaan;
@@ -110,5 +150,55 @@ class ImportirController extends Controller
     {
        Importir::find($id)->delete();
        return redirect('admin/importir/index')->with('message','Transaction Success');
+    }
+
+    public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = Importir::where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->get();
+
+        $no = 1;
+        foreach($datas as $item){
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Perusahaan'=> $item->nama_perusahaan,
+                'Alamat Perusahaan'=> $item->alamat_perusahaan,
+                'NPWP' => $item->npwp,
+                'Nama Pemilik' => $item->nama_pemilik,  
+                'Email' => $item->email, 
+                'Telp' => $item->telp, 
+                'Nomor Api' => $item->nomor_api,
+                'Uraian Barang' => $item->uraian_barang,
+                'Pos Taris' => $item->pos_taris, 
+                'Volume Kuantitas' => $item->volume_kuantitas, 
+                'Volume Satuan' => $item->volume_satuan, 
+                'Nilai' => $item->nilai,
+                'Nilai Satuan' => $item->nilai_satuan, 
+                'Negara Asal' => $item->negara_asal,
+                'Pelabuhan Bongkar' => $item->pelabuhan_bongkar,
+                'Pib Nomor' => $item->pib_nomor, 
+                'Pib Tanggal' => $item->pib_tanggal, 
+                'Keterangan' => $item->keterangan,
+            );
+            $no++;
+        }
+
+
+        if($datas->count() > 0){
+            return \Excel::create('importir', function($excel) use ($data) {
+                $excel->sheet('importir', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+        }else{
+            return redirect('admin/importir/index')->with('message-failed','Transaction Success');
+        }
     }
 }

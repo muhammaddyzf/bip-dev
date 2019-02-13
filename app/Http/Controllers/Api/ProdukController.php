@@ -40,7 +40,7 @@ class ProdukController extends Controller
             if($row->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($row->images['IMG_NAMA']);
+                $images = url('public/'.$row->images['IMG_NAMA']);
             }
 
             if($row->ratingProduk->count() > 0){
@@ -137,7 +137,7 @@ class ProdukController extends Controller
             if($data->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($data->images['IMG_NAMA']);
+                $images = url('public/'.$data->images['IMG_NAMA']);
             }
 
             $ratingProduk = 0;
@@ -229,7 +229,7 @@ class ProdukController extends Controller
             if($row->images['IMG_NAMA'] == ""){
                 $images = Images::imageDefault();
             }else{
-                $images = url($row->images['IMG_NAMA']);
+                $images = url('public/'.$row->images['IMG_NAMA']);
             }
 
             $ratingProduk = 0;
@@ -346,7 +346,7 @@ class ProdukController extends Controller
                 if($item->IMG_NAMA == "" || $item->IMG_NAMA == NULL){
                     $images = Images::imageDefault();
                 }else{
-                    $images = $item->IMG_NAMA;
+                    $images = url('public/'.$item->IMG_NAMA);
                 }
                 $data[] = array(
                     'id_user'   => $item->id,

@@ -100,7 +100,7 @@ class ProdukController extends Controller
             'prdkJumlahKapasitasProduksi' => 'required',
             'prdkNilaiInvestasi' => 'required',
             'prdkTenagaKerja' => 'required',
-            'prdkKbli'       => 'required|alpha_dash|max:10',
+            'prdkKbli'       => 'required',
         ]);
 
         $data = new Produk;
@@ -216,7 +216,7 @@ class ProdukController extends Controller
             'prdkNama'       => 'required',
             'prdkKomposisi'  => 'required',
             'prdkKeterangan' => 'required',
-            'prdkKbli'       => 'required|alpha_dash|max:10',
+            'prdkKbli'       => 'required',
 
             'prdkPemasaran' => 'required',
             'prdkBbbp' => 'required',

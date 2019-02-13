@@ -16,7 +16,7 @@ navbar
 
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				Selamat Datang di Halaman Admin.
+				Selamat Datang di Halamandfdf Admin.
 			</div>
 		</div>
 	</div>

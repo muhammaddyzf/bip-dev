@@ -276,6 +276,16 @@ WARNING: Respond.js doesn't work if you view the page via file:// -->
 {{--   <script type="text/javascript" src="/js/app.js"></script> --}}
 
   @stack('scripts')
+  <script>
+  $(function() {
+    $('input[name="daterange"]').daterangepicker({
+      opens: 'left'
+    }, function(start, end, label) {
+      console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+  });
+  </script>
+  
   <script type="text/javascript">
     $(function(){
       $(document).find('.form-control-material .form-control').each(function () {

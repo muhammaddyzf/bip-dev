@@ -21,13 +21,13 @@ navbar
 								
 								<label>Kategori Pasar</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('namaPasar')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('namaPasar')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Nama Pasar" name="namaPasar" value="{{old('namaPasar',$pasarTradisional->nama_pasar)}}">
 								
 								<label>Nama Pasar</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif static required">
 								<select name="provinsi" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($provinsi as $dataProvinsi)
@@ -42,7 +42,7 @@ navbar
 								<label>Provinsi</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif static required">				
 								<select name="kabkot" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kabkot as $dataKabkot)
@@ -58,7 +58,7 @@ navbar
 								<label>Kabkot</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif static required">				
 								<select name="kecamatan" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kecamatan as $dataKecamatan)
@@ -71,7 +71,7 @@ navbar
 								</select>
 								<label>Kecamatan</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif static required">
 								<textarea class="form-control" id="kode" placeholder="Alamat" name="alamat">{{old('alamat',$pasarTradisional->alamat)}}</textarea>
 								<label>Alamat</label>
 							</div>
@@ -80,31 +80,31 @@ navbar
 						</div>
 						<div class="col-md-6">
 
-							<div class="form-group form-control-material @if($errors->has('luasTanah')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('luasTanah')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Luas Tanah" name="luasTanah" value="{{old('luasTanah',$pasarTradisional->luas_tanah)}}">
 								<label>Luas Tanah (m2)</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('luasBangunan')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('luasBangunan')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Luas Bangunan" name="luasBangunan" value="{{old('luasBangunan',$pasarTradisional->luas_bangunan)}}">
 								<label>Luas Bangunan (m2)</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('bangunanKios')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('bangunanKios')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Bangunan Kios" name="bangunanKios" value="{{old('bangunanKios',$pasarTradisional->bangunan_kios)}}">
 								<label>Bangunan Kios (Unit)</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('bangunanLos')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('bangunanLos')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Bangunan Los" name="bangunanLos" value="{{old('bangunanLos',$pasarTradisional->bangunan_los)}}">
 								<label>Bangunan Los (Unit)</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('jumlahPedagang')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('jumlahPedagang')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Jumlah Pedagang" name="jumlahPedagang" value="{{old('jumlahPedagang',$pasarTradisional->jumlah_pedagang)}}">
 								<label>Jumlah Pedagang</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('status')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('status')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Status" name="status" value="{{old('status',$pasarTradisional->status)}}">
 								<label>Status</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('pengelola')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('pengelola')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="pengelola" name="pengelola" value="{{old('pengelola',$pasarTradisional->pengelola)}}">
 								<label>Pengelola</label>
 							</div>

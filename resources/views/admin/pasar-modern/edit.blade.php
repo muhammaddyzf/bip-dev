@@ -21,13 +21,13 @@ navbar
 								
 								<label>Kategori Pasar</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('namaToko')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('namaToko')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Nama Pasar" name="namaToko" value="{{old('namaToko',$pasarModern->nama_toko)}}">
 								
 								<label>Nama Toko</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('provinsi')) has-danger @endif static required">
 								<select name="provinsi" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($provinsi as $dataProvinsi)
@@ -42,7 +42,7 @@ navbar
 								<label>Provinsi</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kabkot')) has-danger @endif static required">				
 								<select name="kabkot" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kabkot as $dataKabkot)
@@ -58,7 +58,7 @@ navbar
 								<label>Kabkot</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif">				
+							<div class="form-group form-control-material @if($errors->has('kecamatan')) has-danger @endif static required">				
 								<select name="kecamatan" class="form-control">
 									<option value="">(Pilih)</option>
 									@foreach ($kecamatan as $dataKecamatan)
@@ -71,7 +71,7 @@ navbar
 								</select>
 								<label>Kecamatan</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('alamat')) has-danger @endif static required">
 								<textarea class="form-control" id="kode" placeholder="Alamat" name="alamat">{{old('alamat',$pasarModern->alamat)}}</textarea>
 								<label>Alamat</label>
 							</div>
@@ -80,21 +80,21 @@ navbar
 						</div>
 						<div class="col-md-6">
 
-							<div class="form-group form-control-material @if($errors->has('luasTanah')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('luasTanah')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Luas Tanah" name="luasTanah" value="{{old('luasTanah',$pasarModern->luas_tanah)}}">
 								<label>Luas Tanah (m2)</label>
 							</div>
-							<div class="form-group form-control-material @if($errors->has('luasBangunan')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('luasBangunan')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Luas Bangunan" name="luasBangunan" value="{{old('luasBangunan',$pasarModern->luas_bangunan)}}">
 								<label>Luas Bangunan (m2)</label>
 							</div>
 
-							<div class="form-group form-control-material @if($errors->has('namaPerusahaan')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('namaPerusahaan')) has-danger @endif static required">
 								<input type="text" class="form-control" id="kode" placeholder="Nama Perusahaan" name="namaPerusahaan" value="{{old('namaPerusahaan', $pasarModern->nama_perusahaan)}}">
 								
 								<label>Nama Perusahaan</label>
 							</div>							
-							<div class="form-group form-control-material @if($errors->has('alamatPerusahaan')) has-danger @endif">
+							<div class="form-group form-control-material @if($errors->has('alamatPerusahaan')) has-danger @endif static required">
 								<textarea class="form-control" id="kode" placeholder="Alamat Perusahaan" name="alamatPerusahaan">{{old('alamatPerusahaan', $pasarModern->alamat_perusahaan)}}</textarea>
 								<label>Alamat Perusahaan</label>
 							</div>

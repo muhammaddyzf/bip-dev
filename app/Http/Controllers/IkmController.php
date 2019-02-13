@@ -49,7 +49,7 @@ class IkmController extends Controller
 
     public function getData()
     {
-        $ikm = ikm::all();
+        $ikm = ikm::where('IKM_KAT_ID', 'KATIKMID111111')->get();
         $data = Datatables::of($ikm)
                
                 ->addColumn('IKM_NAMA', function($row){
@@ -112,7 +112,6 @@ class IkmController extends Controller
             'ikmNama'       => 'required',
             'ikmNpwp'       => 'required',
             'nikPemilik'    => 'required',
-            'nikPemilik'    => 'required',
             'ikmPemilik'    => 'required',
             'ikmNoPendirian'=> 'required',
             'ikmDtBerdiri'  => 'required',
@@ -124,6 +123,7 @@ class IkmController extends Controller
             'provinsi'      => 'required',
             'kabkot'        => 'required',
             'kecamatan'     => 'required',
+            'desa'     => 'required',
         ]);
 
         DB::beginTransaction();
@@ -131,7 +131,9 @@ class IkmController extends Controller
 
             $data = new Ikm;
 
+            $kategoriIkm = 'KATIKMID111111';
             $data->IKM_ID         = $this->id;
+            $data->IKM_KAT_ID     = $kategoriIkm;
             $data->IKM_KODE       = $this->kode;
             $data->IKM_NAMA       = $request->ikmNama;
             $data->IKM_NPWP       = $request->ikmNpwp;
@@ -183,6 +185,55 @@ class IkmController extends Controller
             $images->IMG_USERINS   = $idUser;
             $images->IMG_USERUPDT  = $idUser;
 
+            $images->save();
+
+            //Create User
+            $username = User::getUserName($request->ikmPemilik, date('His'));   
+            $user     = User::create([
+                        'name'     => $request->ikmPemilik,
+                        'email'    => $request->ikmEmail,
+                        'username' => $username,
+                        'password' => bcrypt('123456'),
+                      ]); 
+
+
+            //Pengguna
+            $rand = rand(1000, 9000);
+            $pengguna = new Pengguna;
+            $pengguna->PNG_ID       = 'PNGID'.$rand.date('His'); 
+            $pengguna->IKM_ID       = $this->id;
+            $pengguna->PNG_NIK      = '';
+            $pengguna->PNG_PEND     = '';
+            $pengguna->PNG_TLP      = '';
+            $pengguna->PNG_ALMNT    = '';
+            $pengguna->PNG_EMAIL    = $username;
+            $pengguna->USER_ID      = $user->id;
+            $pengguna->KTPNG_ID     = 'KTPNGID7663231943';
+            $pengguna->PNG_NAMA     = $request->ikmPemilik;
+            $pengguna->PNG_DTINS    = $this->dateInsert;
+            $pengguna->PNG_DTUPDT   = $this->dateUpdate;
+            $pengguna->PNG_USERINS  = '';
+            $pengguna->PNG_USERUPDT = '';
+            $pengguna->save();
+
+            $token                  = $user->createToken($username)-> accessToken; 
+            $updateToken            = User::find($user->id);
+            $updateToken->token     = $token;
+            $updateToken->save();
+
+
+            //Image User
+            $rand = rand(1000, 9000);
+            $images = new Images;   
+            $images->IMG_ID        = 'IMG'.$rand.date('His'); 
+            $images->ID            = $user->id; 
+            $images->IMG_GROUP     = 'USER'; 
+            $images->IMG_NAMA      = ''; 
+            $images->IMG_KET       = 'USER IMAGE'; 
+            $images->IMG_DTINS     = $this->dateInsert;
+            $images->IMG_DTUPDT    = $this->dateUpdate;
+            $images->IMG_USERINS   = $idUser;
+            $images->IMG_USERUPDT  = $idUser;
             $images->save();
 
         DB::commit();
@@ -239,7 +290,6 @@ class IkmController extends Controller
             'ikmNama'       => 'required',
             'ikmNpwp'       => 'required',
             'nikPemilik'    => 'required',
-            'nikPemilik'    => 'required',
             'ikmPemilik'    => 'required',
             'ikmNoPendirian'=> 'required',
             'ikmDtBerdiri'  => 'required',
@@ -251,6 +301,7 @@ class IkmController extends Controller
             'provinsi'      => 'required',
             'kabkot'        => 'required',
             'kecamatan'     => 'required',
+            'desa'     => 'required',
         ]);
 
         DB::beginTransaction();
@@ -492,11 +543,7 @@ class IkmController extends Controller
                         $telp = $value->telp;
                     }
 
-                    if($value->kategori == "IKM"){
-                        $kategoriIkm = 'KATIKMID111111';
-                    }elseif($value->kategori == "Industri Besar"){
-                        $kategoriIkm = 'KATIKMID222222';
-                    }
+                    $kategoriIkm = 'KATIKMID111111';
 
                     $idIkm = 'IKMID'.$rand.date('His');
 
@@ -618,7 +665,7 @@ class IkmController extends Controller
                         $pengguna->PNG_PEND     = '';
                         $pengguna->PNG_TLP      = '';
                         $pengguna->PNG_ALMNT    = '';
-                        $pengguna->PNG_EMAIL    = '';
+                        $pengguna->PNG_EMAIL    = $username;
                         $pengguna->USER_ID      = $user->id;
                         $pengguna->KTPNG_ID     = 'KTPNGID7663231943';
                         $pengguna->PNG_NAMA     = $value->nama_pemilik;
@@ -641,7 +688,7 @@ class IkmController extends Controller
                         $images->ID            = $user->id; 
                         $images->IMG_GROUP     = 'USER'; 
                         $images->IMG_NAMA      = ''; 
-                        $images->IMG_KET       = 'PRODUK IMAGE'; 
+                        $images->IMG_KET       = 'USER IMAGE'; 
                         $images->IMG_DTINS     = $this->dateInsert;
                         $images->IMG_DTUPDT    = $this->dateUpdate;
                         $images->IMG_USERINS   = $idUser;
@@ -675,5 +722,58 @@ class IkmController extends Controller
         })->download($type);
     }
 
-    
+    public function cetakLaporanIkm(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = Ikm::with('produk')->where('IKM_DTINS', '>=', $startDate)->where('IKM_DTINS', '<=', $endDate)->where('IKM_KAT_ID', 'KATIKMID111111')->get();
+
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->IKM_PROV)->first();
+            $kabupaten   = Kabkot::where('id', $item->IKM_KABKOT)->first();
+            $kecamatan   = Kecamatan::where('id', $item->IKM_KEC)->first();
+            $desa        = Desa::where('id', $item->IKM_DESA)->first();
+
+            foreach($item->produk as $itemProduk){
+                $data[] = array(
+                    'No'             => $no,
+                    'Nama Perusahaan'=> $item->IKM_NAMA,
+                    'Nama Pemilik'=> $item->IKM_PEMILIK,
+                    'Alamat'=> $item->IKM_ALMTDET,
+                    'Desa'=> $desa->name,
+                    'Kecamatan'=> $kecamatan->name,
+                    'Kab/Kota'=> $kabupaten->name,
+                    'Telp/Fax'=> $item->IKM_TLP,
+                    'Bentuk Badan'=> $item->IKM_BENTUKBADAN,
+                    'Tahun Dikeluarkan Ijin'=> $item->IKM_THNDIKELUARKANIJIN,
+                    'KBLI'=> $itemProduk->PRDK_KBLI,
+                    'Nama Produk'=> $itemProduk->PRDK_NAMA,
+                    'Tenaga Kerja'=> $itemProduk->TENAGAKERJA,
+                    'Nilai Investasi'=> $itemProduk->PRDK_NILAIINVESTASI,
+                    'Jumlah Kapasitas Produksi'=> $itemProduk->PRDK_JUMLAHKAPASITASPRODUKSI,
+                    'Satuan kapasitas Produksi'=> $itemProduk->PRDK_SATUANKAPASITASPRODUKSI,
+                    'Nilai Produksi'=> $itemProduk->PRDK_NILAIPRODUKSI,
+                    'Nilai BB/BP'=> $itemProduk->PRDK_BBBP,
+                    'Pemasaran Ekspor (%)'=> $itemProduk->PRDK_PEMASARAN,
+                );
+                $no++;
+            }
+        }
+
+        if($datas->count() > 0){
+            return \Excel::create('IKM', function($excel) use ($data) {
+                $excel->sheet('IKM', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+        }else{
+            return redirect('admin/ikm')->with('message-failed','Transaction Success');
+        }
+    }
 }

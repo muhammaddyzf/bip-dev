@@ -199,4 +199,52 @@ class PasarTradisionalController extends Controller
         $data->delete();
         return redirect('admin/pasar-tradisional')->with('message','Transaction Success');
     }
+
+    public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = PasarTradisional::where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->get();
+        
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->id_provinsi)->first();
+            $kabupaten   = Kabkot::where('id', $item->id_kabkot)->first();
+            $kecamatan   = Kecamatan::where('id', $item->id_kecamatan)->first();
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Pasar'     => $item->nama_pasar,
+                'Alamat'         => $item->alamat,
+                'Provinsi'       => $provinsi->name,
+                'Kabupaten/Kota' => $kabupaten->name,
+                'Kecamatan'      => $kecamatan->name,
+                'Luas Tanah'     => $item->luas_tanah,
+                'Luas Bangunan'  => $item->luas_bangunan,
+                'Kios'           => $item->bangunan_kios,
+                'Los'            => $item->bangunan_los,
+                'Jumlah Pedagang'=> $item->jumlah_pedagang,
+                'Status'         => $item->status,
+                'Pengelola'      => $item->pengelola,
+            );
+            $no++;
+        }
+
+        if($datas->count() > 0){
+
+            return \Excel::create('pasar-tradisional', function($excel) use ($data) {
+                $excel->sheet('pasar-tradisional', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+
+        }else{
+            return redirect('admin/pasar-tradisional')->with('message-failed','Transaction Success');
+        }
+    }  
 }

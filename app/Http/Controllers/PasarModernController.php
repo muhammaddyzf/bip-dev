@@ -191,4 +191,49 @@ class PasarModernController extends Controller
         $data->delete();
         return redirect('admin/pasar-modern')->with('message','Transaction Success');
     }
+
+    public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = PasarModern::where('created_at', '>=', $startDate)->where('created_at', '<=', $endDate)->get();
+
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->id_provinsi)->first();
+            $kabupaten   = Kabkot::where('id', $item->id_kabkot)->first();
+            $kecamatan   = Kecamatan::where('id', $item->id_kecamatan)->first();
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Toko'     => $item->nama_toko,
+                'Alamat'         => $item->alamat,
+                'Provinsi'       => $provinsi->name,
+                'Kabupaten/Kota' => $kabupaten->name,
+                'Kecamatan'      => $kecamatan->name,
+                'Luas Tanah'     => $item->luas_tanah,
+                'Luas Bangunan'  => $item->luas_bangunan,
+                'Nama Perusahaan'  => $item->nama_perusahaan,
+                'Alamat Perusahaan'  => $item->alamat_perusahaan,
+            );
+            $no++;
+        }
+
+        if($datas->count() > 0){
+
+            return \Excel::create('pasar-modern', function($excel) use ($data) {
+                $excel->sheet('pasar-modern', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+
+        }else{
+            return redirect('admin/pasar-modern')->with('message-failed','Transaction Success');
+        }
+    }
 }
