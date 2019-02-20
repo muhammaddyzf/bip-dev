@@ -78,4 +78,46 @@ class KehadiranEventController extends Controller
 
 		return back()->with('message','Transaction Success');
 	}
+
+	public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+
+        $event = Event::where('EVT_ID', $request->event_id)->first();
+		$datas = IkmToEvent::kehadiranEventIkm($request->event_id);
+
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->id_provinsi)->first();
+            $kabupaten   = Kabkot::where('id', $item->id_kabkot)->first();
+            $kecamatan   = Kecamatan::where('id', $item->id_kecamatan)->first();
+            $desa        = Desa::where('id', $item->id_desa)->first();
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Ikm'       => $item->IKM_NAMA,
+                'Nama Pemilik'   => $item->IKM_PEMILIK,
+                'Provinsi'       => $provinsi->name,
+                'Kabupaten/Kota' => $kabupaten->name,
+                'Kecamatan'      => $kecamatan->name,
+                'Desa'			 => $desa->name,
+                'Status Kehadiran'=> $item->kehadiran,
+            );
+            $no++;
+        }
+
+        if($datas->count() > 0){
+
+            return \Excel::create('Kehadiran Event', function($excel) use ($data) {
+                $excel->sheet('Kehadiran Event', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+
+        }else{
+            return redirect('admin/kehadiran-event/index')->with('message-failed','Transaction Success');
+        }
+    }
 }

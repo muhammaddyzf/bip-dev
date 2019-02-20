@@ -139,6 +139,10 @@ class IkmToEvent extends Model
 								, KABKOT.name AS kabkot
 								, KEC.name AS kecamatan
 								, DES.name AS desa
+								, IKM.IKM_PROV as id_provinsi
+								, IKM.IKM_KABKOT as id_kabkot
+								, IKM.IKM_KEC as id_kecamatan
+								, IKM.IKM_DESA as id_desa
 								, IF(ITE.ITE_HADIR = 0, 'Belum Hadir', IF(ITE.ITE_HADIR = 1, 'Hadir', IF(ITE.ITE_HADIR = 2, 'Tidak Hadir', ''))) AS kehadiran
                             	, IF(ITE.ITE_HADIR = 0, 'label-warning', IF(ITE.ITE_HADIR = 1, 'label-success', IF(ITE.ITE_HADIR = 2, 'label-danger', ''))) AS label_kehadiran
 				

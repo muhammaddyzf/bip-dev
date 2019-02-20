@@ -12,7 +12,24 @@ navbar
 	<div class="col-md-8 col-lg-12">
 		<div class="panel panel-default paper-shadow" data-z="0.5">
 			<div class="panel-body">
-				<a href="{{route('admin.produk.tambah')}}" class="btn btn-white"><i class="fa fa-plus"></i> Tambah Produk</a>
+				<div class="row">
+					<div class="col-md-6">	
+						<a href="{{route('admin.produk.tambah')}}" class="btn btn-white"><i class="fa fa-plus"></i> Tambah Produk</a>
+					</div>
+					<div class="col-md-6">
+						<div class="pull-right">
+							<form class="form-inline" role="form" action="{{ route('ikm.cetak-laporan') }}" method="post">@csrf
+							 	 <div class="form-group @if($errors->has('daterange')) has-danger @endif">
+									<input type="text" class="form-control" id="dates" placeholder="Tanggal" name="daterange" required="">
+									<span class="ma-form-highlight"></span>
+									<span class="ma-form-bar"></span>
+								</div>
+
+								<button type="submit" class="btn btn-white"><i class="fa fa-download"></i> Cetak Laporan </button>
+							</form>
+						</div>
+					</div>
+				</div>
 				<br>
 				<table class="table table-bordered table-striped" id="data-produk">
 					<thead>

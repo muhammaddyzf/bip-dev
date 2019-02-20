@@ -323,4 +323,53 @@ class EventController extends Controller
 
         return $data;
 	}
+
+	public function cetakLaporan(Request $request)
+    {
+        $type  = "xlsx";
+        $array = explode('-', $request->daterange);
+        
+        $startDate  = Carbon::parse($array[0])->format('Y-m-d');
+        $endDate    = Carbon::parse($array[1])->format('Y-m-d');
+
+        $datas = Event::where('EVT_DTINS', '>=', $startDate)->where('EVT_DTINS', '<=', $endDate)->get();
+        
+        $no = 1;
+        foreach($datas as $item){
+            $provinsi    = Provinsi::where('id', $item->EVT_PROV)->first();
+            $kabupaten   = Kabkot::where('id', $item->EVT_KABKOT)->first();
+            $kecamatan   = Kecamatan::where('id', $item->EVT_KEC)->first();
+
+            $data[] = array(
+                'No'             => $no,
+                'Nama Event'     => $item->EVT_NAMA,
+                'Panitia'     	 => $item->EVT_PANITIA,
+                'Ketua Panitia'  => $item->EVT_KETPANITIA,
+                'Tema'  		 => $item->EVT_TEMA,
+                'Telp'  		 => $item->EVT_TLP,
+                'Web'  		 	 => $item->EVT_WEB,
+                'Tanggal Mulai'  => $item->EVT_DTDARI,
+                'Tanggal Berakhir'=> $item->EVT_DTSAMPAI,
+                'Provinsi'       => $provinsi->name,
+                'Kabupaten/Kota' => $kabupaten->name,
+                'Kecamatan'      => $kecamatan->name,
+                'Alamat'		 => $item->EVT_ALMTDET,
+                'Keterangan'	 => $item->EVT_KET,
+            );
+            $no++;
+        }
+
+        if($datas->count() > 0){
+
+            return \Excel::create('event', function($excel) use ($data) {
+                $excel->sheet('event', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download($type);
+
+        }else{
+            return redirect('admin/event/index')->with('message-failed','Transaction Success');
+        }
+    } 
 }

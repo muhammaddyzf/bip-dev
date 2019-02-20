@@ -188,6 +188,9 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
         Route::get('data-ikmToEvent/{id}', 'EventController@getDataIkmToEvent')->name('admin.event.data-ikmToEvent');
     });
 
+
+    Route::post('event/cetak-laporan', 'EventController@cetakLaporan')->name('event.cetak-laporan');
+
     // Route Ikm To Event
     Route::group(['prefix' => 'ikm-to-event'], function(){
         Route::get('tambah/{id}', 'IkmToEventController@create')->name('admin.ikm-to-event.tambah');
@@ -207,6 +210,8 @@ Route::group(['prefix' => 'admin',  'middleware' => ['admin','auth:admin']], fun
         Route::get('edit/{idEvent}/{idIkm}', 'KehadiranEventController@edit')->name('kehadiran-event.edit'); 
         Route::post('update/{idEvent}/{idIkm}', 'KehadiranEventController@update')->name('kehadiran-event.update'); 
     });
+
+    Route::post('kehadiran-event/cetak-laporan', 'KehadiranEventController@cetakLaporan')->name('kehadiran-event.cetak-laporan');
 
 
     // Importir
